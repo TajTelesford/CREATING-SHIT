@@ -1,4 +1,4 @@
-package source;
+package Source;
 import java.util.Random;
 public class User 
 {

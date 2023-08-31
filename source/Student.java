@@ -1,9 +1,9 @@
-package source;
+package Source;
 
 
 public class Student extends User{
 
-    private Integer AvgGrade;
+    private Integer GPA;
     
     public Student(String name)
     {
@@ -12,6 +12,16 @@ public class Student extends User{
 
     public Integer AvgGrade()
     {
-        return AvgGrade;
+        return GPA;
     }
+    //IMPLEMENT
+    /*
+        - Take assignments
+            - Pull assignments from database
+            - (Get Teacher ID from database)
+        - Submit assignments
+        - Submit attendance
+        - See their grades
+        - Email teachers
+     */
 }
