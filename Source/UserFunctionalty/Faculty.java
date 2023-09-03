@@ -1,9 +1,9 @@
-package Source;
+package Source.UserFunctionalty;
 
 public class Faculty extends User{
-    public Faculty(String name)
+    public Faculty(String name, String email, String password)
     {
-        super("Student", name);
+        super("Student", name, email, password);
     }
     /*  
         - Create Assignments

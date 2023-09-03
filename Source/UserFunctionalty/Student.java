@@ -1,13 +1,13 @@
-package Source;
+package Source.UserFunctionalty;
 
 
 public class Student extends User{
 
     private Integer GPA;
     
-    public Student(String name)
+    public Student(String name, String email, String password)
     {
-        super("Student", name);
+        super("Student", name, email, password);
     }
 
     public Integer AvgGrade()

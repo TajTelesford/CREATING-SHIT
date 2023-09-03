@@ -1,4 +1,4 @@
-package Source.Utility;
+package Source.CourseComponenets;
 public class Assignment {
     /*
         Variables:
