@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import Source.CourseComponenets.Assignment;
+import Source.UserFunctionalty.Faculty;
 import Source.UserFunctionalty.User;
 
 public class Query {
@@ -17,19 +18,24 @@ public class Query {
     public Query(DATABASECONNECTION database)
     {
         DB = database;
+        OpenConnection();
+        InitConnection();
+    }
+
+    public void QueryShutdown()
+    {
+        CloseConnection();
     }
 
     //LOGIN FUNCTIONALITY
     public ResultSet Login_LogIntoDatabase(String HashedPassword, int ID) throws SQLException
     {
-        OpenConnection();
-        InitConnection();
         String login_query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
         PreparedStatement pStatement = connection.prepareStatement(login_query);
         pStatement.setInt(1, ID);
         pStatement.setString(2, HashedPassword);
         ResultSet UserData = pStatement.executeQuery();
-
+        
         return UserData;
     }
 
@@ -41,6 +47,7 @@ public class Query {
     public void CloseConnection()
     {
         DB.CloseConnection();
+        System.out.println("Peace Out Fam!");
     }
 
     //Has to be used after a open connection function is made
@@ -52,8 +59,7 @@ public class Query {
     //ADMIN FUNCTIONALITY
     public void Admin_ShowUsers() throws SQLException
     {
-        OpenConnection();
-        InitConnection();
+        
         String query = "SELECT * From users";
         Statement statement = null;
         ResultSet resultSet = null;
@@ -76,7 +82,7 @@ public class Query {
                 System.out.println("-------------------------------------");
             }
         }
-        CloseConnection();
+        
     }
 
     public void Admin_AddUser(User user) throws SQLException
@@ -103,20 +109,19 @@ public class Query {
         } finally {
             // Close the PreparedStatement here if needed
         }
-        CloseConnection();
+        
     }
 
     public void Admin_DeleteUser(User user) throws SQLException
     {
-        OpenConnection();
-        InitConnection();
+        
         String deleteQuery = "DELETE FROM users WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
         preparedStatement.setInt(1, user.getUserID());
 
         int rowsDeleted = preparedStatement.executeUpdate();
         System.out.println(rowsDeleted + " ros(s) deleted");
-        CloseConnection();
+        
     }
 
     //FACULTY FUNCTIONALITY
@@ -126,7 +131,18 @@ public class Query {
 
     public void Faculty_ChangeGrades(){}
 
-    public void Faculty_PostAssignment(Assignment assignment, User user) throws SQLException {}
+    public void Faculty_PostAssignment(Assignment assignment, Faculty user) throws SQLException 
+    {
+        String assignment_query = "INSERT INTO assignments (teacher_id, assignment_name, assignment_description, assignment_due_date, assignment_image) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pStatement = connection.prepareStatement(assignment_query);
+
+        pStatement.setInt(1, user.getUserID());
+        pStatement.setInt(2, assignment.GetAssignmentID());
+        pStatement.setString(3, assignment.GetAssignmentName());
+        pStatement.setBytes(4, assignment.GetAssignmentImage());
+
+        pStatement.executeUpdate();
+    }
 
     public void Faculty_DeleteAssignmet(Assignment assignment, User user) throws SQLException {}
 

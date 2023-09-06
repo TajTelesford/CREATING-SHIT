@@ -20,11 +20,8 @@ public class SignUp {
 
         System.out.println("Student or Faculty?: ");
         String user_type = scanner.nextLine().toLowerCase();
-        scanner.nextLine();
         
-
         User CreatedUser = new User(user_type, name, email, Password);
-        System.out.println("Befor function");
         try {
             query.Admin_AddUser(CreatedUser);
         } catch (Exception e) {

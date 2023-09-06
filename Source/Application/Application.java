@@ -1,11 +1,10 @@
 package Source.Application;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import Source.Database.DATABASECONNECTION;
 import Source.Database.Query;
-import Source.GraphicalUserInterface.GraphicalUserInterfaceStartup;
-import Source.Headless.HeadlessStartUp;
+import Source.GraphicalUserInterfaceConfig.GraphicalUserInterfaceStartup;
+import Source.HeadlessConfig.HeadlessStartUp;
 import Source.UserFunctionalty.User;
 
 public class Application {
@@ -50,7 +49,7 @@ public class Application {
             {
                 e.printStackTrace();
             }
-
+            ApplicationQuery.QueryShutdown();
         // try {
         //     database.SecureConnection();
         //     Query q = new Query(database);

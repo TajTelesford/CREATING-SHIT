@@ -24,6 +24,26 @@ public class User
         CreateID();
     }
 
+    //Constructor for already made user from database
+    public User(String type, String name, String email, String password, int id)
+    {
+        UserType = type;
+        Name = name;
+        Email = email;
+        Password = password;
+        ID = id;
+    }
+
+    public Student ReturnAStudent(User user)
+    {
+        return new Student(user.Name, user.Email, user.Password, user.ID);
+    }
+
+    public Faculty ReturnAFaculty(User user)
+    {
+        return new Faculty(user.Name, user.Email, user.Password, user.ID);
+    }
+
     static int RandomNumber()
     {
         Random random = new Random();

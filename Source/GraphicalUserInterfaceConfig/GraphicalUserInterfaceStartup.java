@@ -1,4 +1,4 @@
-package Source.GraphicalUserInterface;
+package Source.GraphicalUserInterfaceConfig;
 
 public class GraphicalUserInterfaceStartup {
     public static void Run()

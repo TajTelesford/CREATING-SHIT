@@ -5,29 +5,36 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import Source.Database.Query;
+import Source.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
+import Source.HeadlessConfig.ConfigUser.ConfigUserUtils;
 
+
+
+//TODO:WHEN YOU WAKE UP INIT A STUDENT OR A FACULTY OBJECT TO BE USED
+//DO NOT RETURN A RESULT SET
 public class Login {
 
     private String Password;
     private int ID;
 
-    public void LogIntoDatabase(Query query) throws SQLException
+    public ConfigUserFromDatabaseResult LogIntoDatabase(Query query, Scanner sc) throws SQLException
     {
         ResultSet UserData = null;
+        ConfigUserFromDatabaseResult result = null;
         try {
-            UserData = query.Login_LogIntoDatabase(Password, ID);
+
+            GetUserContext(sc);
+            UserData = query.Login_LogIntoDatabase(this.Password, this.ID);
+            
         } catch (Exception e) {
             System.out.println("Login Failed");
+        } finally{
+            result = new ConfigUserFromDatabaseResult(UserData);
         }
 
-        while( UserData.next() )
-        {
-            String UserType = UserData.getString("user_type");
-            String name = UserData.getString("name");
-            System.out.println("Welcome , " + name + "! User Type: " + UserType.toUpperCase());
-            
-        }
-        query.CloseConnection();
+        ConfigUserUtils.WelcomeUserFunction(result);
+        
+        return result;
     }
 
     // private String HashPassword(String pass)
@@ -38,10 +45,10 @@ public class Login {
     public void GetUserContext(Scanner scanner)
     {
         System.out.print("Enter User ID: ");
-        ID = scanner.nextInt();
+        this.ID = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
         System.out.print("Enter Password: ");
-        Password = scanner.nextLine();
+        this.Password = scanner.nextLine();
     }
 }
