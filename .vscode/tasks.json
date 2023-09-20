@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "java",
+			"mainClass": "app.src.main.java.school.managemnet.system.Program.SchoolManagementSystem",
+			"targetPath": "${workspaceFolder}/${workspaceFolderBasename}.jar",
+			"elements": [
+				"${compileOutput}",
+				"lib/mysql-connector-j-8.1.0.jar"
+			],
+			"problemMatcher": [],
+			"label": "java: exportjar:School Managemnet System"
+		}
+	]
+}
