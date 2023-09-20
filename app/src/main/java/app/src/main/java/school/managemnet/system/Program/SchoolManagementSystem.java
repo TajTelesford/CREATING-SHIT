@@ -10,4 +10,8 @@ public class SchoolManagementSystem
         app.run();
     }
 
+    public String Test()
+    {
+        return "Works";
+    }
 }
