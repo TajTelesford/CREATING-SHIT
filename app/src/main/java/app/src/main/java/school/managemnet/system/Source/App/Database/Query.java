@@ -14,8 +14,10 @@ import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.A
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
-class UserIdtypes {
+class UserIdtypes 
+{
     String Type;
     int ID;
 }
@@ -35,6 +37,26 @@ public class Query {
     public void QueryShutdown()
     {
         CloseConnection();
+    }
+
+    //SIGN UP FUNCTIONALITY
+    public int[] AppStart_FetchUserIDS() throws SQLException
+    {
+        String query = "SELECT user_id from users";
+        PreparedStatement pStatement = connection.prepareStatement(query);
+        ResultSet resultSet = pStatement.executeQuery();
+
+        int size_of_set = resultSet.getFetchSize();
+        int[] List_Of_UserIDS = new int[ size_of_set + (User.MAX_NUMBER_OF_IDS - size_of_set) ];
+
+        int i = 0;
+        while( resultSet.next() )
+        {
+            int id = resultSet.getInt("user_id");
+            List_Of_UserIDS[i] = id;
+            i++;
+        }
+        return List_Of_UserIDS;
     }
 
     //LOGIN FUNCTIONALITY
@@ -183,6 +205,7 @@ public class Query {
         System.out.println();
 
     }
+    
     //FACULTY FUNCTIONALITY
     public void Faculty_ShowCourses(FacultyImpl user) throws SQLException
     {
@@ -247,39 +270,16 @@ public class Query {
     }
 
     //General Functions
-    public byte[] OpenAssignment(FacultyImpl teacher, Scanner sc) throws SQLException 
+    public byte[] OpenAssignment(FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException 
     {
-        /*
-         * Get a list of all assignments a teacher has
-         * User picks a assignment to open
-         * Fetches the bytes from the LONGBLOB Image 
-         * Returns the bytes to the caller
-         */
-        String teacher_query = "SELECT * FROM courses WHERE teacher_id = ?";
-        PreparedStatement pStatement = connection.prepareStatement(teacher_query);
+        byte[] assignment = null;
+        if(student == null)
+            assignment = Helper_TeacherOpenAssignment(teacher, sc);
+        if(teacher == null)
+            assignment = Helper_StudentOpenAssignment(); //Not Implemented Yet
 
-        pStatement.setInt(1, teacher.getUserID());
-
-        ResultSet resultSet = pStatement.executeQuery();
-        List<course> courseId_list = new ArrayList<>();
-        int choice, i = 0;
-        System.out.println("Which Course Is The Assignment In?: ");
-        while( resultSet.next() )
-        {
-            int course_id = resultSet.getInt("course_id");
-            String course_name = resultSet.getString("course_name");
-            System.out.println("Course "+ i+1 + ": " + course_name + " Section #: " + course_id);
-            courseId_list.add(new course(course_name, course_id));
-            i++;
-        }
-        //Add Validation HERE
-        choice = sc.nextInt();
-        course selected_course = courseId_list.get(choice - 1);
-        Assignment assignment = Helper_GetAssignmentFromCourse(selected_course.GetCourseID(), teacher.getUserID(), sc);
-
-        return assignment.GetAssignmentImage(); //returns image bytes
+        return assignment;
     }
-
 
     //Helper Functions
     public int Helper_GetCourseIDFromTeacher(FacultyImpl teacher) throws SQLException
@@ -332,5 +332,43 @@ public class Query {
         choice = sc.nextInt();
 
         return assignments.get(choice-1);
+    }
+
+    private byte[] Helper_StudentOpenAssignment() throws SQLException
+    {
+        return new byte[5]; //TODO: IMPLEMENT HELPER STUDENT OPEN ASSIGNMENT
+    }
+
+    private byte[] Helper_TeacherOpenAssignment(FacultyImpl teacher, Scanner sc) throws SQLException
+    {
+        /*
+         * Get a list of all assignments a teacher has
+         * User picks a assignment to open
+         * Fetches the bytes from the LONGBLOB Image 
+         * Returns the bytes to the caller
+         */
+        String teacher_query = "SELECT * FROM courses WHERE teacher_id = ?";
+        PreparedStatement pStatement = connection.prepareStatement(teacher_query);
+
+        pStatement.setInt(1, teacher.getUserID());
+
+        ResultSet resultSet = pStatement.executeQuery();
+        List<course> courseId_list = new ArrayList<>();
+        int choice, i = 0;
+        System.out.println("Which Course Is The Assignment In?: ");
+        while( resultSet.next() )
+        {
+            int course_id = resultSet.getInt("course_id");
+            String course_name = resultSet.getString("course_name");
+            System.out.println("Course "+ i+1 + ": " + course_name + " Section #: " + course_id);
+            courseId_list.add(new course(course_name, course_id));
+            i++;
+        }
+        //Add Validation HERE
+        choice = sc.nextInt();
+        course selected_course = courseId_list.get(choice - 1);
+        Assignment assignment = Helper_GetAssignmentFromCourse(selected_course.GetCourseID(), teacher.getUserID(), sc);
+
+        return assignment.GetAssignmentImage(); //returns image bytes
     }
 }

@@ -8,19 +8,26 @@ import app.src.main.java.school.managemnet.system.Source.App.GraphicalUserInterf
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.HeadlessStartUp;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
-public class AppStart {
+public class AppStart 
+{
     static DATABASECONNECTION database;
     public static String input;
     Query ApplicationQuery = null;
-    static int[] Application_UserIDS = new int[User.MAX_NUMBER_OF_IDS];
+    public static int[] Application_UserIDS = new int[User.MAX_NUMBER_OF_IDS];
 
-    public AppStart()
+    public AppStart() 
     {
         ConnectDatabase(
             "root", 
             "new_password", 
             "jdbc:mysql://root@localhost:3306/school_management_system"
         );        
+        try{
+            Application_UserIDS = ApplicationQuery.AppStart_FetchUserIDS();
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
         //set up gui for application or headless
     } 
 
@@ -57,8 +64,7 @@ public class AppStart {
     {
         boolean loop = true;
         while(loop)
-        {
-            
+        {  
             System.out.print(
                     "========================================\n" + 
                     "1: Add User\n" +

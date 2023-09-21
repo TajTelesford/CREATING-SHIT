@@ -16,16 +16,16 @@ import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Us
  *      Submitting correct answers to database
  */
 
-public class FacultyImpl extends User implements FacultyInterface {
+public class FacultyImpl extends User {
 
     private course TeacherCourses;
 
-    public FacultyImpl(String name, String email, String password)
+    public FacultyImpl(String name, String email, String password) 
     {
         super("teacher", name, email, password);
     }
 
-    public FacultyImpl(String name, String email, String password, int id)
+    public FacultyImpl(String name, String email, String password, int id) throws SQLException
     {
         super("teacher", name, email, password, id);
     }
@@ -123,7 +123,8 @@ public class FacultyImpl extends User implements FacultyInterface {
     public void OpenAssignment(Query query, Scanner sc) throws SQLException
     {
         AssignmentView view = new AssignmentView();
-        view.launchAssignmentView(query, this, sc);
+        view.launchAssignmentView(query, this, null, sc);
+        sc.nextLine();
     }
 
     @Override
@@ -131,6 +132,7 @@ public class FacultyImpl extends User implements FacultyInterface {
     {
         query.Faculty_ShowCourses(this);
     }
+    
     //General Functions
     public course GetCourse() { return TeacherCourses; }
 

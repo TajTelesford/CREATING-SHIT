@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
 
 public class Admin extends User{
-    public Admin(String name, String email, String password)
+    public Admin(String name, String email, String password) throws SQLException
     {
         super("Admin", name, email, password);
     }

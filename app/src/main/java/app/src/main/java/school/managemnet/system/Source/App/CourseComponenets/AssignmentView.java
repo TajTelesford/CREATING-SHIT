@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,14 +19,18 @@ public class AssignmentView
 {
 
     //TODO: FIX FUNCTION TO ADD SUPPORT FOR STUDENTS
-    public void launchAssignmentView(Query query, FacultyImpl teacher, Scanner sc) throws SQLException
+    public void launchAssignmentView(Query query, FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException
     {   
-        byte[] assignment = query.OpenAssignment(teacher, sc);
+        byte[] assignment = null;
+        if(student == null)
+            assignment = query.OpenAssignment(teacher, null, sc);
+        if(teacher == null)
+            assignment = query.OpenAssignment(null, student, sc);
         ShowAssignment(assignment);
 
     }
 
-    public void ShowAssignment(byte[] image)
+    private void ShowAssignment(byte[] image)
     {
         if(image == null)
         {
@@ -35,29 +40,39 @@ public class AssignmentView
 
         try {
             // Convert the byte array to an Image
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(image));
+            BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(image));
+
+        // Scale the image to the specified dimensions
+            Image scaledImage = originalImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH);
+
+        // Create a BufferedImage from the scaled Image
+            BufferedImage bufferedImage = new BufferedImage(800, 1000, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.drawImage(scaledImage, 0, 0, null);
+            g2d.dispose();
+
+        // Create an ImageIcon from the scaled image
             ImageIcon imageIcon = new ImageIcon(bufferedImage);
 
-            // Create a JFrame to display the image
-            JFrame frame = new JFrame("Image Viewer");
+        // Create a JFrame to display the image
+            JFrame frame = new JFrame("Assignment");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            // Create a JLabel to display the image
+        // Create a JLabel to display the image
             JLabel label = new JLabel(imageIcon);
             frame.getContentPane().add(label, BorderLayout.CENTER);
 
-            // Set the JFrame size based on the image dimensions
+        // Set the JFrame size based on the image dimensions
             frame.pack();
 
-            // Center the JFrame on the screen
+        // Center the JFrame on the screen
             frame.setLocationRelativeTo(null);
 
-            // Display the JFrame
-            frame.setVisible(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        // Display the JFrame
+        frame.setVisible(true);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
     
 }

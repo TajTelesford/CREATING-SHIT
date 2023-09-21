@@ -1,9 +1,13 @@
 package app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
+import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
+import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 public class StudentImpl extends User implements StudentInterface{
@@ -65,5 +69,13 @@ public class StudentImpl extends User implements StudentInterface{
     public void EmailTeacher() {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void OpenAssignment(Query query, Scanner sc) throws SQLException 
+    {
+        AssignmentView view = new AssignmentView();
+        view.launchAssignmentView(query, null, this, sc);
+        sc.nextLine();
     }
 }
