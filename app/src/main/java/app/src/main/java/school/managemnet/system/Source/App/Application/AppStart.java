@@ -71,6 +71,7 @@ public class AppStart
                     "2: Show Users\n" +
                     "3: Delete Users\n" +
                     "4: Create Courses\n" +
+                    "5: Add Student To Course\n" +
                     "======================================== Enter Choice: " 
             );
 
@@ -90,6 +91,9 @@ public class AppStart
                     break;
                 case 4:
                     ApplicationQuery.Admin_MakeCourses(sc);
+                    break;
+                case 5:
+                    ApplicationQuery.Admin_ConnectStudentToCourse(sc);
                     break;
             }
         }

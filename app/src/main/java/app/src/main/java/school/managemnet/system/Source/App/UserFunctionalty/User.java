@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Application.AppStart;
 import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 public class User implements UserInterface
@@ -15,10 +16,6 @@ public class User implements UserInterface
     private String Email;
     private String Password;
     static public int MAX_NUMBER_OF_IDS = 1000000;
-
-    public enum UserTypes {
-        Teacher, Student
-    }
 
     public User(String type, String name, String email, String password)
     {
@@ -96,99 +93,86 @@ public class User implements UserInterface
     @Override
     public String getUserPassword(){ return Password; }
 
+    //ALL USERS HAVE THESE FUNCTIONS, THE STUDENTS AND FACULTY HAVE THEIR OWN IMPLEMENTATIONS
     @Override
     public void OpenAssignment(Query query, Scanner sc) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'OpenAssignment'");
+        
     }
 
     @Override
     public void ShowCourses(Query query) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ShowCourses'");
+        
     }
 
     @Override
     public void ViewGpa() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ViewGpa'");
+        
     }
 
     @Override
-    public void TakeAssignment() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'TakeAssignment'");
+    public void TakeAssignment(Query query, Scanner sc) throws SQLException {
+        
     }
 
     @Override
-    public void SubmitAssignmnet() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'SubmitAssignmnet'");
+    public void SubmitAssignment(Query query, Scanner sc, AssignmentType assignment) throws SQLException
+    {
+         
     }
 
-    @Override
-    public void SubmitAttendance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'SubmitAttendance'");
-    }
 
     @Override
     public void GetGrades() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GetGrades'");
+       
     }
 
     @Override
     public void EmailTeacher() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'EmailTeacher'");
+       
     }
 
     @Override
     public void ViewStudentGpa() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ViewStudentGpa'");
+         
     }
 
     @Override
     public void ViewStudentsGpa() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ViewStudentsGpa'");
+         
     }
 
     @Override
     public void CreateAssignment(Query query, Scanner scanner) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'CreateAssignment'");
+         
     }
 
     @Override
     public void GradeAssignment() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GradeAssignment'");
+         
     }
 
     @Override
     public void ViewStudentAttendance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ViewStudentAttendance'");
+        
     }
 
     @Override
     public void EmailStudent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'EmailStudent'");
+         
     }
 
     @Override
     public void EmailStudents() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'EmailStudents'");
+     
     }
 
     @Override
     public void DeleteAssignment(Query query, int assignment_id) throws SQLException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'DeleteAssignment'");
+         
+    }
+
+    @Override
+    public void SubmitAttendance() {
+    
     }
 }

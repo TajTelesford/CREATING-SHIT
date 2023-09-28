@@ -3,6 +3,7 @@ package app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.F
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
@@ -74,6 +75,7 @@ public class FacultyImpl extends User {
             -
             Displays the students id to the terminal 
          */
+        NotImplemented.Todo();
         
     }
 
@@ -86,36 +88,36 @@ public class FacultyImpl extends User {
             Gets Students 
 
          */
-        
+        NotImplemented.Todo();
     }
 
     @Override
     public void GradeAssignment() {
-        // TODO Auto-generated method stub
-        
+       
+        NotImplemented.Todo();
     }
 
     @Override
     public void EmailStudent() {
-        // TODO Auto-generated method stub
         
+        NotImplemented.Todo();
     }
 
     @Override
     public void EmailStudents() {
-        // TODO Auto-generated method stub
         
+        NotImplemented.Todo();
     }
 
     @Override
     public void ViewStudentAttendance() {
-        // TODO Auto-generated method stub
         
+        NotImplemented.Todo();
     }
 
     @Override
     public void DeleteAssignment(Query query, int assignment_id) throws SQLException {
-        // TODO Auto-generated method stub
+        NotImplemented.Todo();
         
     }
 

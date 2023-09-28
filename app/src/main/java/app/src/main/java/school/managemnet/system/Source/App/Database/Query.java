@@ -1,10 +1,12 @@
 package app.src.main.java.school.managemnet.system.Source.App.Database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,15 +14,10 @@ import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
-
-class UserIdtypes 
-{
-    String Type;
-    int ID;
-}
 
 public class Query {
     //TODO: Finish Query Class
@@ -206,6 +203,34 @@ public class Query {
 
     }
     
+    public void Admin_ConnectStudentToCourse(Scanner sc) throws SQLException
+    {
+        //search through the list of students
+        //pick a student
+        //get a list of courses
+        //pick a course
+        List<StudentImpl> list_of_students = new ArrayList<>();
+        List<course> list_of_courses = new ArrayList<>();
+
+        list_of_students = Helper_ReturnListOfStudents();
+        Helper_PrintStudents(list_of_students);
+
+        //Create Validation Here
+        System.out.println("Which Student?");
+        int choice = sc.nextInt() - 1;
+        StudentImpl student = list_of_students.get(choice);
+
+        list_of_courses = Helper_ReturnListOfCourses();
+        Helper_PrintCourses(list_of_courses);
+
+        System.out.println("Which Class?");
+        choice = sc.nextInt() - 1;
+
+        course Course = list_of_courses.get(choice);
+
+        Courses_AddStudentToCourse(student.getUserID(), Course.GetCourseID());
+    }
+
     //FACULTY FUNCTIONALITY
     public void Faculty_ShowCourses(FacultyImpl user) throws SQLException
     {
@@ -254,6 +279,27 @@ public class Query {
 
     public void Faculty_GradeAssignment(Assignment assignment, User user) throws SQLException {}
 
+    //Student Functionality
+    public void Student_SubmitAssignment(StudentImpl student, String answers, AssignmentType assignment) throws SQLException
+    {
+        String query = "INSERT INTO submissions (student_id, assignment_id, student_answers, submission_time) " +
+                       "VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            // Set the parameters for the SQL query
+            preparedStatement.setInt(1, student.getUserID());
+            preparedStatement.setInt(2, assignment.GetAssignmentTypeID());
+            preparedStatement.setString(3, answers);
+
+            // Get the current timestamp as the submission time
+            Timestamp submissionTime = new Timestamp(new Date(System.currentTimeMillis()).getTime());
+            preparedStatement.setTimestamp(4, submissionTime);
+
+            // Execute the SQL query to insert the submission
+            int rowsAffected = preparedStatement.executeUpdate();
+            System.out.println("ROWS AFFECTED: " + rowsAffected);
+        }
+    }
     //Course Functionality
     public void Courses_ConnectFacultyToCourse(FacultyImpl teacher, String name) throws SQLException
     {
@@ -269,14 +315,29 @@ public class Query {
         System.out.println("ROWS AFFECTED: " + rowsAffected);
     }
 
-    //General Functions
-    public byte[] OpenAssignment(FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException 
+    private void Courses_AddStudentToCourse(int student_id, int course_id) throws SQLException
     {
-        byte[] assignment = null;
+        String insertQuery = "INSERT INTO Student_Courses (student_id, course_id) VALUES (?, ?)";
+
+        try (PreparedStatement pStatement = connection.prepareStatement(insertQuery)) {
+            pStatement.setInt(1, student_id);
+            pStatement.setInt(2, course_id);
+
+            int rowsInserted = pStatement.executeUpdate();
+
+            System.out.println("ROWS AFFECTED: " + rowsInserted);
+            
+        }
+    }
+
+    //General Functions
+    public AssignmentType OpenAssignment(FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException 
+    {
+        AssignmentType assignment = null;
         if(student == null)
             assignment = Helper_TeacherOpenAssignment(teacher, sc);
         if(teacher == null)
-            assignment = Helper_StudentOpenAssignment(); //Not Implemented Yet
+            assignment = Helper_StudentOpenAssignment(student, sc); //Not Implemented Yet
 
         return assignment;
     }
@@ -334,12 +395,111 @@ public class Query {
         return assignments.get(choice-1);
     }
 
-    private byte[] Helper_StudentOpenAssignment() throws SQLException
+    private AssignmentType Helper_StudentOpenAssignment(StudentImpl student, Scanner sc) throws SQLException
     {
-        return new byte[5]; //TODO: IMPLEMENT HELPER STUDENT OPEN ASSIGNMENT
+        //Get All The Courses The Student Has
+        //Student Picks A Course
+        //Get All Assignments That The Teacher Has Posted
+        //Student Picks An Assignment
+        //Returns The Bytes Of The Assignment
+
+        List<course> courses = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
+
+        courses = Helper_GetStudentCourses(student.getUserID());
+        Helper_PrintCourses(courses);
+
+        System.out.println("Which Course?: ");
+
+        //Add Validation Here
+        int choice = sc.nextInt() - 1;
+
+        assignments = Helper_GetStudentsAssignments(courses.get(choice).GetCourseID());
+        Helper_PrintAssignments(assignments);
+
+        //Add Validation Here
+        choice = sc.nextInt() - 1;
+        sc.nextLine();
+
+        AssignmentType a = new AssignmentType(
+                            assignments.get(choice).GetAssignmentImage(), 
+                            assignments.get(choice).GetAssignmentID()
+                        );
+        return a;
     }
 
-    private byte[] Helper_TeacherOpenAssignment(FacultyImpl teacher, Scanner sc) throws SQLException
+    private void Helper_PrintAssignments(List<Assignment> assignments) 
+    {
+        for(int i = 0; i < assignments.size(); i++)
+            System.out.println(i + 1 + 
+                            ": " + assignments.get(i).GetAssignmentName());
+                
+        
+    }
+
+    private List<Assignment> Helper_GetStudentsAssignments(int course_id) 
+    {
+        List<Assignment> assignments = new ArrayList<>();
+        String query = "SELECT * " +
+                       "FROM assignments " +
+                       "WHERE course_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, course_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) 
+            {
+                assignments.add(
+                    new Assignment(
+                        resultSet.getBytes("assignment_image"), 
+                        resultSet.getInt("assignment_id"),
+                        resultSet.getInt("course_id"),
+                        resultSet.getString("assignment_name"),
+                        resultSet.getString("assignment_description"),
+                        resultSet.getString("due_date"),
+                        resultSet.getString("correct_answers")
+                    )
+                );
+            }
+            } 
+            catch (SQLException e) 
+            {
+                e.printStackTrace();
+            }
+        return assignments;
+    }
+
+    private List<course> Helper_GetStudentCourses(int student_id) throws SQLException
+    {
+        List<course> courses = new ArrayList<>();
+        String query = "SELECT courses.course_name, courses.course_id FROM courses " +
+                        "INNER JOIN student_courses ON courses.course_id = Student_courses.course_id" + 
+                        " WHERE student_courses.student_id = ?";
+        PreparedStatement pStatement = null;
+        ResultSet resultSet = null;
+        try {
+            pStatement = connection.prepareStatement(query);
+            pStatement.setInt(1, student_id);
+            resultSet = pStatement.executeQuery();
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally
+        {
+            while( resultSet.next() )
+            {
+                courses.add(
+                    new course(resultSet.getString("course_name"), 
+                    resultSet.getInt("course_id"))
+                );
+            }
+        }
+        return courses;
+    }
+
+    private AssignmentType Helper_TeacherOpenAssignment(FacultyImpl teacher, Scanner sc) throws SQLException
     {
         /*
          * Get a list of all assignments a teacher has
@@ -369,6 +529,96 @@ public class Query {
         course selected_course = courseId_list.get(choice - 1);
         Assignment assignment = Helper_GetAssignmentFromCourse(selected_course.GetCourseID(), teacher.getUserID(), sc);
 
-        return assignment.GetAssignmentImage(); //returns image bytes
+        AssignmentType a = new AssignmentType(
+                            assignment.GetAssignmentImage(), 
+                            assignment.GetAssignmentID()
+                            );
+
+        return a; //returns image bytes
     }
+
+    private void Helper_PrintCourses(List<course> courses) 
+    {
+        for(int i = 0; i < courses.size(); i++)
+        {
+            System.out.println(
+                "(" + (i + 1) + ")\n" +
+                "Course Name: " +
+                courses.get(i).GetCourseName() + "\n" +
+                "Course ID: " +
+                courses.get(i).GetCourseID()
+        );
+        }
+    }   
+
+    private void Helper_PrintStudents(List<StudentImpl> students) 
+    {
+        for(int i = 0; i < students.size(); i++)
+            System.out.println(
+                                "(" + (i + 1) + ")" +
+                                "NAME: " +
+                                students.get(i).getUserName() + 
+                                " ID: " +
+                                students.get(i).getUserID());
+    }
+
+    private List<StudentImpl> Helper_ReturnListOfStudents() throws SQLException
+    {
+        List<StudentImpl> student_list = new ArrayList<>();
+        //This get all students
+        //Students Enum = 2
+        String query = "SELECT * FROM users WHERE user_type = 2";
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            
+            e.printStackTrace();
+        }
+        finally
+        {
+            while( resultSet.next() )
+            {
+                int id = resultSet.getInt("user_id");
+                String email = resultSet.getString("email");
+                String name = resultSet.getString("name");
+
+                //password is null because we don't need that information at this stage
+                student_list.add(new StudentImpl(name, email, null, id));
+            }
+        }
+
+        return student_list;
+    }
+
+    private List<course> Helper_ReturnListOfCourses() throws SQLException
+    {
+        List<course> course_ids = new ArrayList<>();
+        String query = "select * from courses";
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try 
+        {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        } 
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }
+        finally{
+            while( resultSet.next() )
+            {
+                course_ids.add(new course(
+                    resultSet.getString("course_name"), 
+                    resultSet.getInt("course_id")));
+            }
+        }
+        return course_ids;
+    }
+
+
 }

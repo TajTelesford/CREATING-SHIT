@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
 import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 public class StudentImpl extends User implements StudentInterface{
@@ -39,35 +41,58 @@ public class StudentImpl extends User implements StudentInterface{
     
     @Override
     public void ViewGpa() {
-        // TODO Auto-generated method stub
+        NotImplemented.Todo();
     }
 
     @Override
-    public void TakeAssignment() {
-        // TODO Auto-generated method stub
+    public void TakeAssignment(Query query, Scanner sc) 
+    {
+        AssignmentView view = new AssignmentView();
+        AssignmentType assignment = null;
+        try {
+            assignment = view.launchAssignmentView(query, null, this, sc);
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+        try {
+            SubmitAssignment(query, sc, assignment);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String GetStudentAnswers(Scanner sc)
+    {
+        String student_answers;
+        System.out.println("ANSWER LIKE THIS: (e.g -> 1.a 2.b 3.c ...) ");
+        System.out.println("IF DONE PRESS ENTER, IF NOT DON'T PRESS ENTER");
+        System.out.print("Answer ->: ");
+        student_answers = sc.nextLine();
         
+        return student_answers;
     }
 
     @Override
-    public void SubmitAssignmnet() {
-        // TODO Auto-generated method stub
-        
+    public void SubmitAssignment(Query query, Scanner sc, AssignmentType assignment) throws SQLException 
+    {
+        query.Student_SubmitAssignment(this, GetStudentAnswers(sc), assignment);
     }
 
     @Override
     public void GetGrades() {
-        
+        NotImplemented.Todo();
     }
 
     @Override
     public void SubmitAttendance() {
-        // TODO Auto-generated method stub
+        NotImplemented.Todo();
         
     }
 
     @Override
     public void EmailTeacher() {
-        // TODO Auto-generated method stub
+        NotImplemented.Todo();
         
     }
 
@@ -77,5 +102,12 @@ public class StudentImpl extends User implements StudentInterface{
         AssignmentView view = new AssignmentView();
         view.launchAssignmentView(query, null, this, sc);
         sc.nextLine();
+
+        System.out.print("Do You Want To Take This Assignment: ");
+        //Add Validation Here
+        String input = sc.nextLine().toLowerCase();
+
+        if(input.equals("yes")) TakeAssignment(query, sc);
+        else return;
     }
 }

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
@@ -24,8 +25,8 @@ public interface UserInterface {
     
     //Student
     public void ViewGpa();
-    public void TakeAssignment();
-    public void SubmitAssignmnet();
+    public void TakeAssignment(Query query, Scanner sc) throws SQLException;
+    public void SubmitAssignment(Query query, Scanner sc, AssignmentType assignment) throws SQLException;
     public void SubmitAttendance();
     public void GetGrades();
     public void EmailTeacher();

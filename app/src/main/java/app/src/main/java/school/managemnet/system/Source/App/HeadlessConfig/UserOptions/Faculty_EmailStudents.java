@@ -7,8 +7,7 @@ public class Faculty_EmailStudents implements OptionsInterface {
 
     @Override
     public void ExecuteOption(User user, DataTypes blob) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ExecuteOption'");
+        user.EmailStudents();
     }
     
 }
