@@ -25,9 +25,9 @@ public class HeadlessStartUp {
         ConfigUserFromDatabaseResult USER = null;
         System.out.println("Login or SignUp?: ");
 
-        String userType = UserInput.nextLine().toLowerCase(); // Read and convert to lowercase
+        String input = UserInput.nextLine().toLowerCase();
 
-       if (userType.equals("signup")) {
+       if (input.equals("signup")) {
             try {
                 SignUp userSignUp = new SignUp();
                 userSignUp.SignUpUser(query, UserInput);

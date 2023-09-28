@@ -18,37 +18,47 @@ import javax.imageio.ImageIO;
 
 public class AssignmentView  
 {
-
+    //Async Function
     public AssignmentType launchAssignmentView(Query query, FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException
     {  
-
         if(student == null)
         {
             final AssignmentType assignment = query.OpenAssignment(teacher, null, sc);
             SwingUtilities.invokeLater(()->
             {
-                ShowAssignment(assignment);
+                ShowAssignment(assignment.GetImage());
             });
         }
         if(teacher == null) 
         {
             final AssignmentType assignment = query.OpenAssignment(null, student, sc);
-
             if(student != null) // IT WILL NEVER BE NULL HERE LMAO JAVA TRIPPIN
             {
+                System.out.print("Do You Want To Take This Assignment (Yes/No): ");
+                //Add Validation Here
+                String input = sc.nextLine().toLowerCase();
+
                 SwingUtilities.invokeLater(()->
                 {
-                    ShowAssignment(assignment);
+                    ShowAssignment(assignment.GetImage());
                 });
-                student.TakeAssignment(query, sc);
+
+                if(input.equals("yes")) 
+                {
+                    try {
+                        student.SubmitAssignment(query, sc, assignment);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }   
+
             }
             return assignment;
         }
         return null;
     }
 
-    //Async Function
-    private void ShowAssignment(AssignmentType image)
+    private void ShowAssignment(byte[] image)
     {
         SwingWorker<Void, Void> worker = new SwingWorker<Void,Void>() {
             @Override
@@ -57,7 +67,7 @@ public class AssignmentView
             {
                 try {
                     // Convert the byte array to an Image
-                    BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(image.GetImage()));
+                    BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(image));
 
                 // Scale the image to the specified dimensions
                     Image scaledImage = originalImage.getScaledInstance(800, 800, Image.SCALE_SMOOTH);
@@ -73,7 +83,7 @@ public class AssignmentView
 
                 // Create a JFrame to display the image
                     JFrame frame = new JFrame("Assignment");
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
                 // Create a JLabel to display the image
                     JLabel label = new JLabel(imageIcon);

@@ -48,15 +48,8 @@ public class StudentImpl extends User implements StudentInterface{
     public void TakeAssignment(Query query, Scanner sc) 
     {
         AssignmentView view = new AssignmentView();
-        AssignmentType assignment = null;
         try {
-            assignment = view.launchAssignmentView(query, null, this, sc);
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
-        try {
-            SubmitAssignment(query, sc, assignment);
+            view.launchAssignmentView(query, null, this, sc);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,12 +95,5 @@ public class StudentImpl extends User implements StudentInterface{
         AssignmentView view = new AssignmentView();
         view.launchAssignmentView(query, null, this, sc);
         sc.nextLine();
-
-        System.out.print("Do You Want To Take This Assignment: ");
-        //Add Validation Here
-        String input = sc.nextLine().toLowerCase();
-
-        if(input.equals("yes")) TakeAssignment(query, sc);
-        else return;
     }
 }

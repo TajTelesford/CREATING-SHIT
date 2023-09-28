@@ -22,6 +22,8 @@ import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.St
 public class Query {
     //TODO: Finish Query Class
 
+    static int times = 0;
+
     Connection connection = null;
     DATABASECONNECTION DB = null;
     public Query(DATABASECONNECTION database)
@@ -337,7 +339,7 @@ public class Query {
         if(student == null)
             assignment = Helper_TeacherOpenAssignment(teacher, sc);
         if(teacher == null)
-            assignment = Helper_StudentOpenAssignment(student, sc); //Not Implemented Yet
+            assignment = Helper_StudentOpenAssignment(student, sc);
 
         return assignment;
     }
@@ -403,6 +405,8 @@ public class Query {
         //Student Picks An Assignment
         //Returns The Bytes Of The Assignment
 
+        Query.times++;
+        System.out.println("CALLED: " + Query.times + " times");
         List<course> courses = new ArrayList<>();
         List<Assignment> assignments = new ArrayList<>();
 

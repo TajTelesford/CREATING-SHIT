@@ -8,10 +8,6 @@ import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserUtils;
 
-
-
-//TODO:WHEN YOU WAKE UP INIT A STUDENT OR A FACULTY OBJECT TO BE USED
-//DO NOT RETURN A RESULT SET
 public class Login {
 
     private String Password;
@@ -22,10 +18,8 @@ public class Login {
         ResultSet UserData = null;
         ConfigUserFromDatabaseResult result = null;
         try {
-
             GetUserContext(sc);
             UserData = query.Login_LogIntoDatabase(this.Password, this.ID);
-            
         } catch (Exception e) {
             System.out.println("Login Failed");
         } finally{
