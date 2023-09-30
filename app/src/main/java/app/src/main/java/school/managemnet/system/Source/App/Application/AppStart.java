@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Database.DATABASECONNECTION;
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.GraphicalUserInterfaceConfig.GraphicalUserInterfaceStartup;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.HeadlessStartUp;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
@@ -12,7 +12,7 @@ public class AppStart
 {
     static DATABASECONNECTION database;
     public static String input;
-    Query ApplicationQuery = null;
+    QueryAPI ApplicationQuery = null;
     public static int[] Application_UserIDS = new int[User.MAX_NUMBER_OF_IDS];
 
     public AppStart() 
@@ -34,7 +34,7 @@ public class AppStart
     private void ConnectDatabase(String username, String password, String jdbcUrl)
     {
         database = new DATABASECONNECTION(username, password, jdbcUrl);
-        ApplicationQuery = new Query(database);
+        ApplicationQuery = new QueryAPI(database);
     }
 
     public void run() 

@@ -3,11 +3,11 @@ package app.src.main.java.school.managemnet.system.Source.App.UserAuthentication
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 public class SignUp {
-    public void SignUpUser(Query query, Scanner scanner) throws SQLException
+    public void SignUpUser(QueryAPI query, Scanner scanner) throws SQLException
     {
         System.out.print("Enter User Name: ");
         String name = scanner.nextLine();
@@ -18,9 +18,9 @@ public class SignUp {
         System.out.print("Enter Password: ");
         String Password = scanner.nextLine();
 
-        System.out.println("Student or Faculty?: ");
+        System.out.println("Student or Teacher?: ");
         String user_type = scanner.nextLine().toLowerCase();
-        
+
         User CreatedUser = new User(user_type, name, email, Password);
         try {
             query.Admin_AddUser(CreatedUser);

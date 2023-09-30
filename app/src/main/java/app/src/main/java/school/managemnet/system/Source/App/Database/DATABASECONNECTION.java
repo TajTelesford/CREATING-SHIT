@@ -28,8 +28,8 @@ public class DATABASECONNECTION {
 
             // Step 2: Establish a connection to the database
             connection = DriverManager.getConnection(JdbcUrl, Username, Password);
-            System.out.println("Connected to the database!");
             if(connection == null) System.out.println("Connection is null in Secure");
+            else System.out.println("Connected to the database!");
         } 
         catch (ClassNotFoundException classNotFound) {
             classNotFound.printStackTrace();

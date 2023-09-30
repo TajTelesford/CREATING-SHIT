@@ -2,14 +2,14 @@ package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.Dat
 
 import java.util.Scanner;
 
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 
 public class DataTypes {
-    Query DQuery = null;
+    QueryAPI DQuery = null;
     Scanner scanner = null;
     int integer = -1000; // Random Value
 
-    public DataTypes(Scanner sc, Query query, int x)
+    public DataTypes(Scanner sc, QueryAPI query, int x)
     {
         scanner = sc;
         DQuery = query;
@@ -20,7 +20,7 @@ public class DataTypes {
         return scanner;
     }
 
-    public Query getDQuery() {
+    public QueryAPI getDQuery() {
         return DQuery;
     }
 
@@ -32,7 +32,7 @@ public class DataTypes {
         this.integer = integer;
     }
 
-    public void setDQuery(Query dQuery) {
+    public void setDQuery(QueryAPI dQuery) {
         DQuery = dQuery;
     }
 

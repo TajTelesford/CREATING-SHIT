@@ -24,7 +24,10 @@ dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:32.1.1-jre")
 
+    implementation("com.sun.mail:javax.mail:1.6.2")
+
     implementation(files("/Users/tajtelesford/Desktop/School Managemnet System/lib/mysql-connector-j-8.1.0.jar"))
+    implementation(files("/Users/tajtelesford/Desktop/School Managemnet System/lib/javax.mail.jar"))
 
 
 }

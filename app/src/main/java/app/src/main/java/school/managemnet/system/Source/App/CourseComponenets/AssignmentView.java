@@ -2,7 +2,7 @@ package app.src.main.java.school.managemnet.system.Source.App.CourseComponenets;
 
 import javax.swing.*;
 
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 public class AssignmentView  
 {
     //Async Function
-    public AssignmentType launchAssignmentView(Query query, FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException
+    public AssignmentType launchAssignmentView(QueryAPI query, FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException
     {  
         if(student == null)
         {

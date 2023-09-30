@@ -7,7 +7,7 @@ import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 
@@ -32,7 +32,7 @@ public class FacultyImpl extends User {
     }
     
     @Override
-    public void CreateAssignment(Query query, Scanner scanner) throws SQLException {
+    public void CreateAssignment(QueryAPI query, Scanner scanner) throws SQLException {
         //Get the file from the teacher
         String File;
         do{
@@ -116,13 +116,13 @@ public class FacultyImpl extends User {
     }
 
     @Override
-    public void DeleteAssignment(Query query, int assignment_id) throws SQLException {
+    public void DeleteAssignment(QueryAPI query, int assignment_id) throws SQLException {
         NotImplemented.Todo();
         
     }
 
     @Override
-    public void OpenAssignment(Query query, Scanner sc) throws SQLException
+    public void OpenAssignment(QueryAPI query, Scanner sc) throws SQLException
     {
         AssignmentView view = new AssignmentView();
         view.launchAssignmentView(query, this, null, sc);
@@ -130,7 +130,7 @@ public class FacultyImpl extends User {
     }
 
     @Override
-    public void ShowCourses(Query query) throws SQLException
+    public void ShowCourses(QueryAPI query) throws SQLException
     {
         query.Faculty_ShowCourses(this);
     }

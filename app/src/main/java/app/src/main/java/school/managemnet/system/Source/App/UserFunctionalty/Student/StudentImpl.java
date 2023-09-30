@@ -8,7 +8,7 @@ import java.util.Scanner;
 import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
@@ -45,7 +45,7 @@ public class StudentImpl extends User implements StudentInterface{
     }
 
     @Override
-    public void TakeAssignment(Query query, Scanner sc) 
+    public void TakeAssignment(QueryAPI query, Scanner sc) 
     {
         AssignmentView view = new AssignmentView();
         try {
@@ -67,7 +67,7 @@ public class StudentImpl extends User implements StudentInterface{
     }
 
     @Override
-    public void SubmitAssignment(Query query, Scanner sc, AssignmentType assignment) throws SQLException 
+    public void SubmitAssignment(QueryAPI query, Scanner sc, AssignmentType assignment) throws SQLException 
     {
         query.Student_SubmitAssignment(this, GetStudentAnswers(sc), assignment);
     }
@@ -90,7 +90,7 @@ public class StudentImpl extends User implements StudentInterface{
     }
 
     @Override
-    public void OpenAssignment(Query query, Scanner sc) throws SQLException 
+    public void OpenAssignment(QueryAPI query, Scanner sc) throws SQLException 
     {
         AssignmentView view = new AssignmentView();
         view.launchAssignmentView(query, null, this, sc);

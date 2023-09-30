@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserUtils;
 
@@ -13,7 +13,7 @@ public class Login {
     private String Password;
     private int ID;
 
-    public ConfigUserFromDatabaseResult LogIntoDatabase(Query query, Scanner sc) throws SQLException
+    public ConfigUserFromDatabaseResult LogIntoDatabase(QueryAPI query, Scanner sc) throws SQLException
     {
         ResultSet UserData = null;
         ConfigUserFromDatabaseResult result = null;

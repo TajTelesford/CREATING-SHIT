@@ -15,18 +15,17 @@ import java.util.Scanner;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
+import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
-public class Query {
+public class QueryAPI {
     //TODO: Finish Query Class
 
-    static int times = 0;
-
-    Connection connection = null;
+    static Connection connection = null;
     DATABASECONNECTION DB = null;
-    public Query(DATABASECONNECTION database)
+    public QueryAPI(DATABASECONNECTION database)
     {
         DB = database;
         OpenConnection();
@@ -70,17 +69,10 @@ public class Query {
         return UserData;
     }
 
-    public void OpenConnection()
-    {
-        DB.SecureConnection();
-    }
+    public void OpenConnection() { DB.SecureConnection(); }
 
-    public void CloseConnection()
-    {
-        DB.CloseConnection();
-        System.out.println("Peace Out Fam!");
-    }
-
+    public void CloseConnection() { DB.CloseConnection(); }
+    
     //Has to be used after a open connection function is made
     private void InitConnection()
     {
@@ -149,7 +141,7 @@ public class Query {
         preparedStatement.setInt(1, user.getUserID());
 
         int rowsDeleted = preparedStatement.executeUpdate();
-        System.out.println(rowsDeleted + " ros(s) deleted");
+        System.out.println(rowsDeleted + " row(s) deleted");
     }
 
     public void Admin_MakeCourses(Scanner sc) throws SQLException
@@ -233,6 +225,69 @@ public class Query {
         Courses_AddStudentToCourse(student.getUserID(), Course.GetCourseID());
     }
 
+    //Messaging Functionality
+    static public void QueryMessageApi(int s_id, int r_id, String sender, String subject, String msg)
+    {
+        String query = "insert into messages (sender_id, recipient_id, sender, subject, message) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pStatement = null;
+        try {
+            pStatement = connection.prepareStatement(query);
+        
+            pStatement.setInt(1, s_id);
+            pStatement.setInt(2, r_id);
+            pStatement.setString(3, sender);
+            pStatement.setString(4, subject);
+            pStatement.setString(5, msg);
+        
+            int rows = pStatement.executeUpdate();
+        
+            System.out.println(rows + " row(s) inserted into system");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Close the PreparedStatement here if needed
+        }
+        
+    }
+
+    public static List<MessageType> GetMessages(int id) 
+    {
+        List<MessageType> messages = new ArrayList<>();
+
+        String query = "SELECT * " +
+                        "FROM messages " +
+                        "WHERE recipient_id = ?";
+        
+        ResultSet resultSet = null;
+
+        try (PreparedStatement pStatement = connection.prepareStatement(query)){
+            pStatement.setInt(1, id);
+            resultSet = pStatement.executeQuery();
+
+            while( resultSet.next() )
+                {
+                    int sender_id = resultSet.getInt("sender_id");
+                    int recipient_id = resultSet.getInt("recipient_id");
+                    String sender = resultSet.getString("sender");
+                    String subject = resultSet.getString("subject");
+                    String msg = resultSet.getString("message");
+
+                    messages.add(
+                        new MessageType(sender_id, 
+                                        recipient_id, 
+                                        sender, 
+                                        subject, 
+                                        msg
+                            )
+                    );
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return messages;
+    }
+
     //FACULTY FUNCTIONALITY
     public void Faculty_ShowCourses(FacultyImpl user) throws SQLException
     {
@@ -262,16 +317,16 @@ public class Query {
     public void Faculty_PostAssignment(Assignment assignment, FacultyImpl user) throws SQLException 
     {
         String assignment_query = "INSERT INTO assignments (assignment_id, course_id, assignment_name,"+
-                                    "assignment_description, correct_answers, due_date," +
+                                    "due_date, correct_answers, assignment_description," +
                                     "assignment_image) VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement pStatement = connection.prepareStatement(assignment_query);
 
         pStatement.setInt(1, assignment.GetAssignmentID());
         pStatement.setInt(2, Helper_GetCourseIDFromTeacher(user));
         pStatement.setString(3, assignment.GetAssignmentName());
-        pStatement.setString(4, assignment.GetAssignmentDescription());
+        pStatement.setString(4, assignment.GetAssignmentDueDate());
         pStatement.setString(5, assignment.GetAssignmentCorrectAnswers());
-        pStatement.setString(6, assignment.GetAssignmentDueDate());
+        pStatement.setString(6, assignment.GetAssignmentDescription());
         pStatement.setBytes(7, assignment.GetAssignmentImage());
 
         pStatement.executeUpdate();
@@ -405,8 +460,6 @@ public class Query {
         //Student Picks An Assignment
         //Returns The Bytes Of The Assignment
 
-        Query.times++;
-        System.out.println("CALLED: " + Query.times + " times");
         List<course> courses = new ArrayList<>();
         List<Assignment> assignments = new ArrayList<>();
 
@@ -548,7 +601,7 @@ public class Query {
             System.out.println(
                 "(" + (i + 1) + ")\n" +
                 "Course Name: " +
-                courses.get(i).GetCourseName() + "\n" +
+                courses.get(i).GetCourseName() + " " +
                 "Course ID: " +
                 courses.get(i).GetCourseID()
         );
@@ -624,5 +677,86 @@ public class Query {
         return course_ids;
     }
 
+    public String Helper_GetPasswordFromEmail(String email) 
+    {
+        String password = null;
+        String query = "Select password Where email = ?";
+        try (PreparedStatement pStatement = connection.prepareStatement(query)) {
+            pStatement.setString(1, email);
+
+            ResultSet resultSet = pStatement.executeQuery();
+            if( resultSet.next() )
+                password = resultSet.getString("password");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(password == null) System.out.println("PASSWORD: NULL");
+        return password;
+    }
+
+    public List<FacultyImpl> Helper_GetListOfTeachers(User user) 
+    {
+        String query = "SELECT u.* " +
+                        "FROM users u " +
+                        "INNER JOIN courses c ON u.user_id = c.teacher_id " +
+                        "INNER JOIN student_courses sc ON c.course_id = sc.course_id " +
+                        "WHERE sc.student_id = ?";
+        List<FacultyImpl> teachers_list = new ArrayList<>();
+
+        try(PreparedStatement pStatement = connection.prepareStatement(query))
+        {
+            pStatement.setInt(1, user.getUserID());
+            ResultSet resultSet = pStatement.executeQuery();
+
+            while( resultSet.next() )
+            {
+                teachers_list.add(
+                    new FacultyImpl(
+                        resultSet.getString("name"), 
+                        resultSet.getString("email"), 
+                        resultSet.getString("password"),
+                        resultSet.getInt("user_id")
+                    )
+                );
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return teachers_list;
+    }
+
+    public List<StudentImpl> Helper_GetListOfStudents(User user)
+    {
+        List<StudentImpl> students = new ArrayList<>();
+        String query = "SELECT students.* " +
+                        "FROM users AS students " +
+                        "JOIN Student_Courses ON students.user_id = Student_Courses.student_id " +
+                        "JOIN courses ON Student_Courses.course_id = courses.course_id " +
+                        "WHERE courses.teacher_id = ? AND students.user_type = 'student'";
+
+        ResultSet resultSet = null;
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+            pStatement.setInt(1, user.getUserID());
+            resultSet = pStatement.executeQuery();
+
+            while( resultSet.next() )
+                    {
+                        int id = resultSet.getInt("user_id");
+                        String email = resultSet.getString("email");
+                        String name = resultSet.getString("name");
+                    
+                        students.add( 
+                            new StudentImpl(name, email, null, id)
+                        );
+
+                    }
+                    resultSet.close();
+            } catch (SQLException e) {      
+                e.printStackTrace();
+            }
+        return students;
+    }
 
 }

@@ -3,7 +3,7 @@ package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.DataTypes;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.UserOptions.OptionFactory;
@@ -17,7 +17,7 @@ public class HeadlessStartUp {
     
     static DataTypes HeadlessCustomType = new DataTypes(null, null, 0);
 
-    public static void Run(Query query, Scanner UserInput) 
+    public static void Run(QueryAPI query, Scanner UserInput) 
     {
         HeadlessCustomType.setDQuery(query);
         HeadlessCustomType.setScanner(UserInput);
@@ -49,7 +49,7 @@ public class HeadlessStartUp {
         UserInput.close();
     }
 
-    private static ConfigUserFromDatabaseResult login(Query query, Scanner scanner)
+    private static ConfigUserFromDatabaseResult login(QueryAPI query, Scanner scanner)
     {
         ConfigUserFromDatabaseResult result = null;
         try {
@@ -62,7 +62,7 @@ public class HeadlessStartUp {
         return result;
     }
 
-    private static void HeadlessStartUp_Program_Menu(Scanner UserInput, ConfigUserFromDatabaseResult user, Query query) 
+    private static void HeadlessStartUp_Program_Menu(Scanner UserInput, ConfigUserFromDatabaseResult user, QueryAPI query) 
     throws SQLException
     {
         while(HeadlessProgramLoop)

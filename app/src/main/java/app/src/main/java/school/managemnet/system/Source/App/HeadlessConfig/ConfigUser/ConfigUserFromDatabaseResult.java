@@ -16,22 +16,24 @@ public class ConfigUserFromDatabaseResult {
         String UserType = null;
         String UserName = null;
         String UserEmail = null;
+        String Password = null;
 
         while(userinfo.next()){
             UserId = userinfo.getInt("user_id");
             UserType = userinfo.getString("user_type");
             UserName = userinfo.getString("name");
             UserEmail = userinfo.getString("email");
+            Password = userinfo.getString("password");
         }
 
         //TODO: Add functionality to get blob information (Assignments/email/etc) from the users
 
         user_type = UserType;
         if ("student".equals(UserType)) 
-            student = new StudentImpl(UserName, UserType, UserEmail, UserId);
+            student = new StudentImpl(UserName, UserEmail, Password, UserId);
         
         else if ("teacher".equals(UserType))
-            faculty = new FacultyImpl(UserName, UserEmail, UserEmail, UserId);
+            faculty = new FacultyImpl(UserName, UserEmail, Password, UserId);
             
         userinfo.close();
     }

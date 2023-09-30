@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Application.AppStart;
-import app.src.main.java.school.managemnet.system.Source.App.Database.Query;
+import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
@@ -34,6 +34,11 @@ public class User implements UserInterface
         Email = email;
         Password = password;
         ID = id;
+    }
+
+    @Override
+    public void SetCurrentPassword(String password2) {
+        this.Password = password2;
     }
 
     @Override
@@ -95,12 +100,12 @@ public class User implements UserInterface
 
     //ALL USERS HAVE THESE FUNCTIONS, THE STUDENTS AND FACULTY HAVE THEIR OWN IMPLEMENTATIONS
     @Override
-    public void OpenAssignment(Query query, Scanner sc) throws SQLException {
+    public void OpenAssignment(QueryAPI query, Scanner sc) throws SQLException {
         
     }
 
     @Override
-    public void ShowCourses(Query query) throws SQLException {
+    public void ShowCourses(QueryAPI query) throws SQLException {
         
     }
 
@@ -110,12 +115,12 @@ public class User implements UserInterface
     }
 
     @Override
-    public void TakeAssignment(Query query, Scanner sc) throws SQLException {
+    public void TakeAssignment(QueryAPI query, Scanner sc) throws SQLException {
         
     }
 
     @Override
-    public void SubmitAssignment(Query query, Scanner sc, AssignmentType assignment) throws SQLException
+    public void SubmitAssignment(QueryAPI query, Scanner sc, AssignmentType assignment) throws SQLException
     {
          
     }
@@ -142,7 +147,7 @@ public class User implements UserInterface
     }
 
     @Override
-    public void CreateAssignment(Query query, Scanner scanner) throws SQLException {
+    public void CreateAssignment(QueryAPI query, Scanner scanner) throws SQLException {
          
     }
 
@@ -167,7 +172,7 @@ public class User implements UserInterface
     }
 
     @Override
-    public void DeleteAssignment(Query query, int assignment_id) throws SQLException {
+    public void DeleteAssignment(QueryAPI query, int assignment_id) throws SQLException {
          
     }
 
@@ -175,4 +180,6 @@ public class User implements UserInterface
     public void SubmitAttendance() {
     
     }
+
+    
 }
