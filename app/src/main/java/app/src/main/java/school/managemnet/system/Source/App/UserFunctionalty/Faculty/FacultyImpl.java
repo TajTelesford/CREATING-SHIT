@@ -125,7 +125,7 @@ public class FacultyImpl extends User {
     public void OpenAssignment(QueryAPI query, Scanner sc) throws SQLException
     {
         AssignmentView view = new AssignmentView();
-        view.launchAssignmentView(query, this, null, sc);
+        view.launchAssignmentView(query, this, sc);
         sc.nextLine();
     }
 

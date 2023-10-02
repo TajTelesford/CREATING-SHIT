@@ -4,8 +4,7 @@ import javax.swing.*;
 
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
-import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
-import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,43 +18,45 @@ import javax.imageio.ImageIO;
 public class AssignmentView  
 {
     //Async Function
-    public AssignmentType launchAssignmentView(QueryAPI query, FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException
+    public AssignmentType launchAssignmentView(QueryAPI query, User user, Scanner sc) throws SQLException
     {  
-        if(student == null)
+        AssignmentType a = null;
+        switch(user.getUserType())
         {
-            final AssignmentType assignment = query.OpenAssignment(teacher, null, sc);
-            SwingUtilities.invokeLater(()->
-            {
-                ShowAssignment(assignment.GetImage());
-            });
-        }
-        if(teacher == null) 
-        {
-            final AssignmentType assignment = query.OpenAssignment(null, student, sc);
-            if(student != null) // IT WILL NEVER BE NULL HERE LMAO JAVA TRIPPIN
-            {
+            case "teacher":
+                final AssignmentType a_Teacher = query.OpenAssignment(user, sc);
+                SwingUtilities.invokeLater(()->
+                {
+                    ShowAssignment(a_Teacher.GetImage());
+                });
+                a = a_Teacher;
+                break;
+
+            case "student":
+                final AssignmentType a_Student = query.OpenAssignment(user, sc);
+            
                 System.out.print("Do You Want To Take This Assignment (Yes/No): ");
                 //Add Validation Here
                 String input = sc.nextLine().toLowerCase();
 
                 SwingUtilities.invokeLater(()->
                 {
-                    ShowAssignment(assignment.GetImage());
+                    ShowAssignment(a_Student.GetImage());
                 });
 
                 if(input.equals("yes")) 
                 {
                     try {
-                        student.SubmitAssignment(query, sc, assignment);
+                        user.SubmitAssignment(query, sc, a_Student);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 }   
-
-            }
-            return assignment;
+                a = a_Student;
+                break;
         }
-        return null;
+        
+        return a;
     }
 
     private void ShowAssignment(byte[] image)

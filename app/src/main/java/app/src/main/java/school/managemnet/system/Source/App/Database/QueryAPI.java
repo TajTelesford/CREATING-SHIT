@@ -332,9 +332,9 @@ public class QueryAPI {
         pStatement.executeUpdate();
     }
 
-    public void Faculty_DeleteAssignmet(Assignment assignment, User user) throws SQLException {}
+    public void Faculty_DeleteAssignmet(Assignment assignment, FacultyImpl user) throws SQLException {}
 
-    public void Faculty_GradeAssignment(Assignment assignment, User user) throws SQLException {}
+    public void Faculty_GradeAssignment(Assignment assignment, FacultyImpl user) throws SQLException {}
 
     //Student Functionality
     public void Student_SubmitAssignment(StudentImpl student, int course_id, String answers, AssignmentType assignment) throws SQLException
@@ -389,14 +389,18 @@ public class QueryAPI {
     }
 
     //General Functions
-    public AssignmentType OpenAssignment(FacultyImpl teacher, StudentImpl student, Scanner sc) throws SQLException 
+    public AssignmentType OpenAssignment(User user, Scanner sc) throws SQLException 
     {
         AssignmentType assignment = null;
-        if(student == null)
-            assignment = Helper_TeacherOpenAssignment(teacher, sc);
-        if(teacher == null)
-            assignment = Helper_StudentOpenAssignment(student, sc);
-
+        switch(user.getUserType())
+        {
+            case "teacher":
+                assignment = Helper_TeacherOpenAssignment(user.ReturnAFaculty(user), sc);
+                break;
+            case "student":
+                assignment = Helper_StudentOpenAssignment(user.ReturnAStudent(user), sc);
+                break;
+        }
         return assignment;
     }
 
@@ -784,5 +788,7 @@ public class QueryAPI {
         }
         return course_id;
     }
+
+
 
 }

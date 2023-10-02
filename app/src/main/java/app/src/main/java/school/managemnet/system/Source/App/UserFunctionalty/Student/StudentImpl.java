@@ -49,7 +49,7 @@ public class StudentImpl extends User implements StudentInterface{
     {
         AssignmentView view = new AssignmentView();
         try {
-            view.launchAssignmentView(query, null, this, sc);
+            view.launchAssignmentView(query, this, sc);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -94,7 +94,7 @@ public class StudentImpl extends User implements StudentInterface{
     public void OpenAssignment(QueryAPI query, Scanner sc) throws SQLException 
     {
         AssignmentView view = new AssignmentView();
-        view.launchAssignmentView(query, null, this, sc);
+        view.launchAssignmentView(query, this, sc);
         sc.nextLine();
     }
 }
