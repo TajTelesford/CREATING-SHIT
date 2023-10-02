@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Application.AppStart;
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
@@ -131,10 +132,6 @@ public class User implements UserInterface
        
     }
 
-    @Override
-    public void EmailTeacher() {
-       
-    }
 
     @Override
     public void ViewStudentGpa() {
@@ -162,16 +159,6 @@ public class User implements UserInterface
     }
 
     @Override
-    public void EmailStudent() {
-         
-    }
-
-    @Override
-    public void EmailStudents() {
-     
-    }
-
-    @Override
     public void DeleteAssignment(QueryAPI query, int assignment_id) throws SQLException {
          
     }
@@ -179,6 +166,17 @@ public class User implements UserInterface
     @Override
     public void SubmitAttendance() {
     
+    }
+
+    @Override
+    public void Contact(String subject, String message, DataTypes blob) {
+        
+    }
+
+    @Override
+    public void SeeMessages() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'SeeMessages'");
     }
 
     

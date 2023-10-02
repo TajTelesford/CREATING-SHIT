@@ -9,8 +9,12 @@ import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
+import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 
 public class StudentImpl extends User implements StudentInterface{
     private List<Assignment> StudentAssignments;
@@ -85,9 +89,37 @@ public class StudentImpl extends User implements StudentInterface{
     }
 
     @Override
-    public void EmailTeacher() {
-        NotImplemented.Todo();
-        
+    public void Contact(String subject, String message, DataTypes blob) {
+        List<FacultyImpl> teacher_list = blob.getDQuery().Helper_GetListOfTeachers(this);
+
+        int id = GetTeacherFromList(teacher_list, blob.getScanner());
+
+            MessageType messageBlob = new MessageType(this.getUserID(), id, this.getUserName(), subject, message);
+            MessageAPI.SendMessage(messageBlob, this);
+            blob.getScanner().nextLine();
+    }
+
+    private int GetTeacherFromList(List<FacultyImpl> list, Scanner scanner) {
+        System.out.println("Which Teacher: ");
+        PrintTeachers(list);
+        //Add Validation
+        int choice = scanner.nextInt() - 1;
+
+        return list.get(choice).getUserID();
+	}
+
+	private void PrintTeachers(List<FacultyImpl> list) {
+        System.out.println("=============================\n");
+        for(int i = 0; i < list.size(); i++)
+        {
+            System.out.println(
+                "(" + (i+1) + ")\n" +
+                "Name: " + list.get(i).getUserName() + "\n" +
+                "Email: " + list.get(i).getUserEmail() 
+            );
+        }
+        System.out.println("\n");
+        System.out.println("=============================");
     }
 
     @Override
@@ -97,4 +129,6 @@ public class StudentImpl extends User implements StudentInterface{
         view.launchAssignmentView(query, this, sc);
         sc.nextLine();
     }
+
+	
 }

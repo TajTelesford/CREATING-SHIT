@@ -1,14 +1,19 @@
 package app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
+import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
 
 //TODO: Create Functionality for teachers to have multiple courses
@@ -17,7 +22,7 @@ import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Us
  *      Submitting correct answers to database
  */
 
-public class FacultyImpl extends User {
+public class FacultyImpl extends User implements FacultyInterface{
 
     private course TeacherCourses;
 
@@ -98,15 +103,37 @@ public class FacultyImpl extends User {
     }
 
     @Override
-    public void EmailStudent() {
-        
-        NotImplemented.Todo();
+    public void Contact(String subject, String message, DataTypes blob) {
+        List<StudentImpl> student_list = blob.getDQuery().Helper_GetListOfStudents(this);
+        int id = GetStudentFromList(student_list, blob.getScanner());
+
+        MessageType messageBlob = new MessageType(this.getUserID(), id, this.getUserName(), subject, message);
+        MessageAPI.SendMessage(messageBlob, this);
+        blob.getScanner().nextLine();
     }
 
-    @Override
-    public void EmailStudents() {
-        
-        NotImplemented.Todo();
+    private int GetStudentFromList(List<StudentImpl> list, Scanner scanner) {
+        System.out.println("Which Teacher: ");
+        PrintStudents(list);
+        //Add Validation
+        int choice = scanner.nextInt() - 1;
+
+        return list.get(choice).getUserID();
+    }
+
+    private void PrintStudents(List<StudentImpl> list) 
+    {
+        System.out.println("=============================\n");
+        for(int i = 0; i < list.size(); i++)
+        {
+            System.out.println(
+                "(" + (i+1) + ")\n" +
+                "Name: " + list.get(i).getUserName() + "\n" +
+                "Email: " + list.get(i).getUserEmail() 
+            );
+        }
+        System.out.println("\n");
+        System.out.println("=============================");
     }
 
     @Override
@@ -181,8 +208,7 @@ public class FacultyImpl extends User {
     }
 
     private String Helper_GetAssignmentAnswers(Scanner sc)
-    {
-        
+    {  
         String response;
         int checked = 0;
         do{
@@ -211,5 +237,6 @@ public class FacultyImpl extends User {
         }
         return true;
     }
+
 
 }

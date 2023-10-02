@@ -74,10 +74,7 @@ public class QueryAPI {
     public void CloseConnection() { DB.CloseConnection(); }
     
     //Has to be used after a open connection function is made
-    private void InitConnection()
-    {
-        connection = DB.GetConnection();
-    }    
+    private void InitConnection() { connection = DB.GetConnection(); } 
     
     //ADMIN FUNCTIONALITY
     public void Admin_ShowUsers() throws SQLException
@@ -128,10 +125,7 @@ public class QueryAPI {
             System.out.println(rows + " row(s) inserted into system");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            // Close the PreparedStatement here if needed
-        }
-        
+        } 
     }
 
     public void Admin_DeleteUser(User user) throws SQLException
@@ -358,6 +352,7 @@ public class QueryAPI {
             System.out.println("ROWS AFFECTED: " + rowsAffected);
         }
     }
+
     //Course Functionality
     public void Courses_ConnectFacultyToCourse(FacultyImpl teacher, String name) throws SQLException
     {
