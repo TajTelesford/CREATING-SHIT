@@ -2,8 +2,8 @@ package app.src.main.java.school.managemnet.system.Source.App.CourseComponenets;
 
 import javax.swing.*;
 
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 

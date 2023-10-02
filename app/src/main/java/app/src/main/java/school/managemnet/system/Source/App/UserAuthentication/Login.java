@@ -10,16 +10,16 @@ import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.Conf
 
 public class Login {
 
-    private String Password;
-    private int ID;
+    private static String Password;
+    private static int ID;
 
-    public ConfigUserFromDatabaseResult LogIntoDatabase(QueryAPI query, Scanner sc) throws SQLException
+    public static ConfigUserFromDatabaseResult LogIntoDatabase(QueryAPI query, Scanner sc) throws SQLException
     {
         ResultSet UserData = null;
         ConfigUserFromDatabaseResult result = null;
         try {
             GetUserContext(sc);
-            UserData = query.Login_LogIntoDatabase(this.Password, this.ID);
+            UserData = query.Login_LogIntoDatabase(Password, ID);
         } catch (Exception e) {
             System.out.println("Login Failed");
         } finally{
@@ -36,13 +36,20 @@ public class Login {
     //     return "NOT IMPLEMENTED";
     // }
 
-    public void GetUserContext(Scanner scanner)
+    public static void GetUserContext(Scanner scanner)
     {
         System.out.print("Enter User ID: ");
-        this.ID = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        try {
+            ID = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("Enter Password: ");
+            Password = scanner.nextLine();
+        } catch (Exception e) {
+            System.out.print("ID or Password Is Wrong, Try Again");
+        }
+        
+         // Consume the newline character
 
-        System.out.print("Enter Password: ");
-        this.Password = scanner.nextLine();
+        
     }
 }

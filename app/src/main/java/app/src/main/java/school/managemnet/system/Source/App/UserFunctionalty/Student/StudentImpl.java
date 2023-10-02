@@ -8,8 +8,8 @@ import java.util.Scanner;
 import app.src.main.java.school.managemnet.system.Source.App.NotImplemented;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.AssignmentView;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 public class StudentImpl extends User implements StudentInterface{
@@ -69,7 +69,8 @@ public class StudentImpl extends User implements StudentInterface{
     @Override
     public void SubmitAssignment(QueryAPI query, Scanner sc, AssignmentType assignment) throws SQLException 
     {
-        query.Student_SubmitAssignment(this, GetStudentAnswers(sc), assignment);
+        int course_id = QueryAPI.Helper_GetCourseIDFromAssignment(assignment);
+        query.Student_SubmitAssignment(this, course_id, GetStudentAnswers(sc), assignment);
     }
 
     @Override

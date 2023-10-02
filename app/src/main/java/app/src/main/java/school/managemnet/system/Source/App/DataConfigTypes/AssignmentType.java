@@ -1,4 +1,4 @@
-package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes;
+package app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes;
 
 public class AssignmentType {
     static byte[] image = null;

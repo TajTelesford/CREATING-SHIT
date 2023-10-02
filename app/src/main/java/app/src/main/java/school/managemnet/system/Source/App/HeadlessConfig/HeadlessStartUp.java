@@ -3,12 +3,12 @@ package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.DataTypes;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.UserOptions.OptionFactory;
 import app.src.main.java.school.managemnet.system.Source.App.UserAuthentication.Login;
 import app.src.main.java.school.managemnet.system.Source.App.UserAuthentication.SignUp;
+import app.src.main.java.school.managemnet.system.Source.App.UserOptions.OptionFactory;
 
 
 public class HeadlessStartUp {
@@ -23,43 +23,56 @@ public class HeadlessStartUp {
         HeadlessCustomType.setScanner(UserInput);
 
         ConfigUserFromDatabaseResult USER = null;
-        System.out.println("Login or SignUp?: ");
 
-        String input = UserInput.nextLine().toLowerCase();
-
-       if (input.equals("signup")) {
-            try {
-                SignUp userSignUp = new SignUp();
-                userSignUp.SignUpUser(query, UserInput);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //Login
-        USER = login(query, UserInput);
-
+        USER = ConfigUser(HeadlessCustomType);
+        
         //Program Loop
         try{
             HeadlessStartUp_Program_Menu(UserInput, USER, query);
         } catch (Exception e) {    
             e.printStackTrace();
         }
-
         UserInput.close();
     }
-
-    private static ConfigUserFromDatabaseResult login(QueryAPI query, Scanner scanner)
+    
+    private static ConfigUserFromDatabaseResult ConfigUser(DataTypes blob)
     {
-        ConfigUserFromDatabaseResult result = null;
-        try {
-            Login userLogin = new Login();
-            result = userLogin.LogIntoDatabase(query, scanner);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.print("Failed Here in Headless login");
+        String input = null;
+        ConfigUserFromDatabaseResult user = null;
+        do{
+            System.out.println("Login or SignUp?: ");
+            input = blob.getScanner().nextLine().toLowerCase();
+            if (input.equals("signup")) {
+                    try {
+                        SignUp userSignUp = new SignUp();
+                        userSignUp.SignUpUser(blob.getDQuery(), blob.getScanner());
+                        break;
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(input.equals("login"))
+                {
+                    //Login
+                    try{
+                        user = Login.LogIntoDatabase(blob.getDQuery(), blob.getScanner());
+                        break;
+                    } catch ( SQLException e ){
+                        System.out.print("{ Couldn't Login, Try Again }\n ->");
+                    }
+                }
+            }while(!ValidateInitialSignIn(input));
+        return user;
+    }
+
+    private static boolean ValidateInitialSignIn(String input)
+    {
+        if(!input.equals("login") || !input.equals("sign up"))
+        {
+            System.out.println("Not A Valid Choose, Rethink your life");
+            return false;
         }
-        return result;
+        return true;
     }
 
     private static void HeadlessStartUp_Program_Menu(Scanner UserInput, ConfigUserFromDatabaseResult user, QueryAPI query) 
@@ -82,7 +95,7 @@ public class HeadlessStartUp {
                 do
                 {
                     option = usrInput.nextLine();
-                }while(!ValidateOption(Integer.parseInt(option)));
+                }while(!ValidateOption(option));
 
                 if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
                 {
@@ -96,7 +109,7 @@ public class HeadlessStartUp {
                 OptionFactory.Faculty_FactoryPrintOptions();
                 do{
                     option = usrInput.nextLine();
-                }while(!ValidateOption(Integer.parseInt(option)));
+                }while(!ValidateOption(option));
 
                 if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
                 {
@@ -112,10 +125,10 @@ public class HeadlessStartUp {
     }
 
     //Validates choice depending on user type
-    private static boolean ValidateOption(int option)
+    private static boolean ValidateOption(String option)
     {
         try{
-            if(option > OptionFactory.FactoryMaxOptions || option < 1)
+            if(Integer.parseInt(option) > OptionFactory.FactoryMaxOptions || Integer.parseInt(option) < 1)
             {
                 System.out.println("Not A Valid Option, Please Choose Again");
                 return false;

@@ -2,6 +2,7 @@ package app.src.main.java.school.managemnet.system.Source.App.MessageProtocol;
 
 import java.util.List;
 
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 

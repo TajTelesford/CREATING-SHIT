@@ -1,11 +1,11 @@
-package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.UserOptions;
+package app.src.main.java.school.managemnet.system.Source.App.UserOptions;
 
 import java.util.List;
 import java.util.Scanner;
 
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.DataTypes;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageAPI;
-import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;

@@ -3,8 +3,8 @@ package app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.S
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
 
 public interface StudentInterface {
     public void ViewGpa();

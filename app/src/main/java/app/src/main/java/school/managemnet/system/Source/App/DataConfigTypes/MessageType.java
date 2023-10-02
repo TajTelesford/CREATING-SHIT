@@ -1,4 +1,4 @@
-package app.src.main.java.school.managemnet.system.Source.App.MessageProtocol;
+package app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes;
 
 public class MessageType {
     private String sender;

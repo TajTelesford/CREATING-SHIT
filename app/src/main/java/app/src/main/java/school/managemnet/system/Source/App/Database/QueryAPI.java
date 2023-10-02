@@ -14,8 +14,8 @@ import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.Assignment;
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
-import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.DataConfigTypes.AssignmentType;
-import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageType;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
+import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
@@ -337,20 +337,21 @@ public class QueryAPI {
     public void Faculty_GradeAssignment(Assignment assignment, User user) throws SQLException {}
 
     //Student Functionality
-    public void Student_SubmitAssignment(StudentImpl student, String answers, AssignmentType assignment) throws SQLException
+    public void Student_SubmitAssignment(StudentImpl student, int course_id, String answers, AssignmentType assignment) throws SQLException
     {
-        String query = "INSERT INTO submissions (student_id, assignment_id, student_answers, submission_time) " +
-                       "VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO submissions (student_id, course_id, assignment_id, student_answers, submission_time) " +
+                       "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             // Set the parameters for the SQL query
             preparedStatement.setInt(1, student.getUserID());
-            preparedStatement.setInt(2, assignment.GetAssignmentTypeID());
-            preparedStatement.setString(3, answers);
+            preparedStatement.setInt(2, course_id);
+            preparedStatement.setInt(3, assignment.GetAssignmentTypeID());
+            preparedStatement.setString(4, answers);
 
             // Get the current timestamp as the submission time
             Timestamp submissionTime = new Timestamp(new Date(System.currentTimeMillis()).getTime());
-            preparedStatement.setTimestamp(4, submissionTime);
+            preparedStatement.setTimestamp(5, submissionTime);
 
             // Execute the SQL query to insert the submission
             int rowsAffected = preparedStatement.executeUpdate();
@@ -757,6 +758,31 @@ public class QueryAPI {
                 e.printStackTrace();
             }
         return students;
+    }
+
+    public static int Helper_GetCourseIDFromAssignment(AssignmentType a)
+    {
+        int course_id = -1;
+        String query = "SELECT courses.course_id " +
+                        "FROM courses " +
+                        "JOIN assignments ON courses.course_id = assignments.course_id " +
+                        "WHERE assignments.assignment_id = ?";
+        
+        
+        try(PreparedStatement pStatement = connection.prepareStatement(query)) 
+        {   
+            pStatement.setInt(1, a.GetAssignmentTypeID());
+            ResultSet set = pStatement.executeQuery();
+
+            if( set.next() )
+            {
+                course_id = set.getInt("course_id");
+            }
+        } catch (SQLException e)
+        {
+            System.out.println("Skill Issue");
+        }
+        return course_id;
     }
 
 }
