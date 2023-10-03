@@ -308,22 +308,26 @@ public class QueryAPI {
 
     public void Faculty_ChangeGrades(){}
 
-    public void Faculty_PostAssignment(Assignment assignment, FacultyImpl user) throws SQLException 
+    public void Faculty_PostAssignment(Assignment assignment, FacultyImpl user) 
     {
         String assignment_query = "INSERT INTO assignments (assignment_id, course_id, assignment_name,"+
                                     "due_date, correct_answers, assignment_description," +
                                     "assignment_image) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement pStatement = connection.prepareStatement(assignment_query);
+        try(PreparedStatement pStatement = connection.prepareStatement(assignment_query))
+        {
+            pStatement.setInt(1, assignment.GetAssignmentID());
+            pStatement.setInt(2, Helper_GetCourseIDFromTeacher(user));
+            pStatement.setString(3, assignment.GetAssignmentName());
+            pStatement.setString(4, assignment.GetAssignmentDueDate());
+            pStatement.setString(5, assignment.GetAssignmentCorrectAnswers());
+            pStatement.setString(6, assignment.GetAssignmentDescription());
+            pStatement.setBytes(7, assignment.GetAssignmentImage());
 
-        pStatement.setInt(1, assignment.GetAssignmentID());
-        pStatement.setInt(2, Helper_GetCourseIDFromTeacher(user));
-        pStatement.setString(3, assignment.GetAssignmentName());
-        pStatement.setString(4, assignment.GetAssignmentDueDate());
-        pStatement.setString(5, assignment.GetAssignmentCorrectAnswers());
-        pStatement.setString(6, assignment.GetAssignmentDescription());
-        pStatement.setBytes(7, assignment.GetAssignmentImage());
-
-        pStatement.executeUpdate();
+            pStatement.executeUpdate();
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void Faculty_DeleteAssignmet(Assignment assignment, FacultyImpl user) throws SQLException {}
@@ -331,7 +335,7 @@ public class QueryAPI {
     public void Faculty_GradeAssignment(Assignment assignment, FacultyImpl user) throws SQLException {}
 
     //Student Functionality
-    public void Student_SubmitAssignment(StudentImpl student, int course_id, String answers, AssignmentType assignment) throws SQLException
+    public void Student_SubmitAssignment(StudentImpl student, int course_id, String answers, AssignmentType assignment)
     {
         String query = "INSERT INTO submissions (student_id, course_id, assignment_id, student_answers, submission_time) " +
                        "VALUES (?, ?, ?, ?, ?)";
@@ -350,6 +354,9 @@ public class QueryAPI {
             // Execute the SQL query to insert the submission
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println("ROWS AFFECTED: " + rowsAffected);
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
         }
     }
 

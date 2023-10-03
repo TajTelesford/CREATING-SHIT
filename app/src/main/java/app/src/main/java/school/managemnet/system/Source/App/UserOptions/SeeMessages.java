@@ -8,8 +8,9 @@ import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.MessageProtocol.MessageAPI;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
-public class SeeMessages implements OptionsInterface {
+public class SeeMessages extends OptionsInterface {
 
+    //TODO: Add SeeMessages Function For The Users
     @Override
     public void ExecuteOption(User user, DataTypes blob) {
         List<MessageType> messages = QueryAPI.GetMessages(user.getUserID());

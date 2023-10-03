@@ -1,66 +1,17 @@
 package app.src.main.java.school.managemnet.system.Source.App.UserOptions;
 
-
-import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.HeadlessStartUp;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
 public class OptionFactory {
 
     static OptionsInterface Option;
     public static int FactoryMaxOptions = 9;
+    public static OptionsHandler handler = new OptionsHandler(); 
 
-    public static void FactoryRun(int option, User user, DataTypes blob)
+    public static void FactoryRun(int option, User user)
     {
-        ConfigOption(option).ExecuteOption(user, blob);
-    }
-
-    //TODO: FIX THIS
-    private static int GetNumOfAllImplementations() {
-        Class<OptionsInterface> OptionsInterface = OptionsInterface.class;
-        int count = 0;
-
-        Class<?>[] allImplementations = OptionsInterface.getClasses();
-        for(Class<?> c : allImplementations)
-        {
-            if(OptionsInterface.isAssignableFrom(c) && !c.equals(OptionsInterface)) count++;
-        }
-        return count;
-    }
-
-    //configures option
-    private static OptionsInterface ConfigOption(int option)
-    {
-        switch(option)
-        {
-            case 1:
-                Option = new Student_ViewGpa();
-                break;
-            case 2:
-                Option = new Student_TakeAssignment();
-                break;
-            case 3:
-                Option = new Student_SeeGrades();
-                break;
-            case 4:
-                Option = new Contact();
-                break;
-            case 5:
-                Option = new SeeMessages();
-                break;
-            case 6:
-                Option = new Faculty_CreateAssignments();
-                break;
-            case 7:
-                Option = new Faculty_ShowCourses();
-                break;
-            case 8:
-                Option = new Faculty_OpenAssignments();
-                break;
-            default:
-                Option = new NotValidOption();
-
-        }
-        return Option;
+        OptionsHandler.OptionHandler(option).ExecuteOption(user, HeadlessStartUp.HeadlessCustomType);
     }
 
     public static void Student_FactoryPrintOptions()

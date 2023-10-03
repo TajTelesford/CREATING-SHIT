@@ -1,5 +1,4 @@
 package app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig;
-
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -10,12 +9,11 @@ import app.src.main.java.school.managemnet.system.Source.App.UserAuthentication.
 import app.src.main.java.school.managemnet.system.Source.App.UserAuthentication.SignUp;
 import app.src.main.java.school.managemnet.system.Source.App.UserOptions.OptionFactory;
 
-
 public class HeadlessStartUp {
     
     private static boolean HeadlessProgramLoop = true;
     
-    static DataTypes HeadlessCustomType = new DataTypes(null, null, 0);
+    public static DataTypes HeadlessCustomType = new DataTypes(null, null, 0);
 
     public static void Run(QueryAPI query, Scanner UserInput) 
     {
@@ -86,42 +84,28 @@ public class HeadlessStartUp {
 
     private static void UserChoiceOptions(ConfigUserFromDatabaseResult usr, Scanner usrInput)
     {
-        
         String option = null;
-        switch(usr.user_type)
+
+        if(usr.user_type.equals("student"))
+            OptionFactory.Student_FactoryPrintOptions();
+        else if(usr.user_type.equals("teacher"))
+            OptionFactory.Faculty_FactoryPrintOptions();
+
+        do{
+            option = usrInput.nextLine();
+        }while(!ValidateOption(option));
+
+        if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
         {
-            case "student":
-                OptionFactory.Student_FactoryPrintOptions();
-                do
-                {
-                    option = usrInput.nextLine();
-                }while(!ValidateOption(option));
+            QuitHeadlessLoop();
+            return;
+        } 
 
-                if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
-                {
-                    QuitHeadlessLoop();
-                    return;
-                } 
-                OptionFactory.FactoryRun(Integer.parseInt(option), usr.getStudent(), HeadlessCustomType);
-                break;
-                
-            case "teacher":
-                OptionFactory.Faculty_FactoryPrintOptions();
-                do{
-                    option = usrInput.nextLine();
-                }while(!ValidateOption(option));
-
-                if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
-                {
-                    QuitHeadlessLoop();
-                    return;
-                }
-                OptionFactory.FactoryRun(Integer.parseInt(option), usr.getFaculty(), HeadlessCustomType);
-                break;
-            default:
-                System.out.println("Something went wrong with ConfigUserFromDatabase");
-                
-        }
+        OptionFactory.FactoryRun(Integer.parseInt(option), 
+                                usr.user_type.equals("student") 
+                                ? 
+                                usr.getStudent() : 
+                                usr.getFaculty() );
     }
 
     //Validates choice depending on user type

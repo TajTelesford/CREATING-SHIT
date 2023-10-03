@@ -175,8 +175,7 @@ public class User implements UserInterface
 
     @Override
     public void SeeMessages() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'SeeMessages'");
+        
     }
 
     

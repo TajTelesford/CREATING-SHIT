@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.DataTypes;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 
-public class Student_TakeAssignment implements OptionsInterface {
+public class Student_TakeAssignment extends OptionsInterface {
 
     @Override
     public void ExecuteOption(User user, DataTypes blob) {

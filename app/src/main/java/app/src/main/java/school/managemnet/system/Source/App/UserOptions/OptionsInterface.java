@@ -6,6 +6,6 @@ import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Us
 //TODO:FINISH ALL OPTIONS
 
 //Allows All SubClasses To Excute Their Option
-public interface OptionsInterface {
-    public void ExecuteOption(User user, DataTypes blob);
+public abstract class OptionsInterface {
+    public void ExecuteOption(User user, DataTypes blob){}
 }
