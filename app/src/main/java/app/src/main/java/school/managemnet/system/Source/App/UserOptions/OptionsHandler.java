@@ -19,7 +19,7 @@ public class OptionsHandler{
         OptionsMap.put(8, new Faculty_OpenAssignments());
     }
 
-    public static OptionsInterface OptionHandler(int OptionChoice)
+    public OptionsInterface OptionHandler(int OptionChoice)
     {
         return OptionsMap.get(OptionChoice);
     }

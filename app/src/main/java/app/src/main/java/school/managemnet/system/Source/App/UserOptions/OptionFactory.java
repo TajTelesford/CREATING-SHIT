@@ -7,11 +7,11 @@ public class OptionFactory {
 
     static OptionsInterface Option;
     public static int FactoryMaxOptions = 9;
-    public static OptionsHandler handler = new OptionsHandler(); 
+    private static OptionsHandler handler = new OptionsHandler(); 
 
     public static void FactoryRun(int option, User user)
     {
-        OptionsHandler.OptionHandler(option).ExecuteOption(user, HeadlessStartUp.HeadlessCustomType);
+        handler.OptionHandler(option).ExecuteOption(user, HeadlessStartUp.HeadlessCustomType);
     }
 
     public static void Student_FactoryPrintOptions()
