@@ -16,6 +16,7 @@ import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.A
 import app.src.main.java.school.managemnet.system.Source.App.CourseComponenets.course;
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.AssignmentType;
 import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.MessageType;
+import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
@@ -58,15 +59,20 @@ public class QueryAPI {
     }
 
     //LOGIN FUNCTIONALITY
-    public ResultSet Login_LogIntoDatabase(String HashedPassword, int ID) throws SQLException
+    public 
+    ConfigUserFromDatabaseResult Login_LogIntoDatabase(String HashedPassword, int ID) throws SQLException
     {
+        ResultSet UserData = null;
         String login_query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
+    
         PreparedStatement pStatement = connection.prepareStatement(login_query);
+        
         pStatement.setInt(1, ID);
         pStatement.setString(2, HashedPassword);
-        ResultSet UserData = pStatement.executeQuery();
+        UserData = pStatement.executeQuery();
+
         
-        return UserData;
+        return new ConfigUserFromDatabaseResult(UserData);
     }
 
     public void OpenConnection() { DB.SecureConnection(); }

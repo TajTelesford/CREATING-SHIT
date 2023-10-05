@@ -2,6 +2,7 @@ package app.src.main.java.school.managemnet.system.Source.App.UserAuthentication
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
@@ -12,23 +13,22 @@ public class Login {
 
     private static String Password;
     private static int ID;
-
+    private static int MAX_Login_Times = 3;
     public static ConfigUserFromDatabaseResult LogIntoDatabase(QueryAPI query, Scanner sc) throws SQLException
     {
-        ResultSet UserData = null;
+        int count = 0;
         ConfigUserFromDatabaseResult result = null;
-        try {
-            GetUserContext(sc);
-            UserData = query.Login_LogIntoDatabase(Password, ID);
-        } catch (Exception e) {
-            System.out.println("Login Failed");
-        } finally{
-            result = new ConfigUserFromDatabaseResult(UserData);
-        }
-
-        ConfigUserUtils.WelcomeUserFunction(result);
-        
-        return result;
+        do{
+            try {
+                GetUserContext(sc);
+                result = query.Login_LogIntoDatabase(Password, ID);
+                ConfigUserUtils.WelcomeUserFunction(result);
+                if(result != null) return result;
+            } catch (NullPointerException | SQLException | InputMismatchException e) {
+                System.out.println("Login Failed");
+            } 
+        }while(count < MAX_Login_Times && GetUserContext(sc));
+        return null;
     }
 
     // private String HashPassword(String pass)
@@ -36,7 +36,7 @@ public class Login {
     //     return "NOT IMPLEMENTED";
     // }
 
-    public static void GetUserContext(Scanner scanner)
+    public static boolean GetUserContext(Scanner scanner) throws InputMismatchException
     {
         System.out.print("Enter User ID: ");
         try {
@@ -44,11 +44,13 @@ public class Login {
             scanner.nextLine();
             System.out.print("Enter Password: ");
             Password = scanner.nextLine();
-        } catch (Exception e) {
-            System.out.print("ID or Password Is Wrong, Try Again");
+        } catch (InputMismatchException e) {
+
+            return false;
         }
         
-         // Consume the newline character
+        return true;
+        
 
         
     }

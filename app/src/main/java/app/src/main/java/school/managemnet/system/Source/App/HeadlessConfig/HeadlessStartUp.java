@@ -23,6 +23,7 @@ public class HeadlessStartUp {
         ConfigUserFromDatabaseResult USER = null;
 
         USER = ConfigUser(HeadlessCustomType);
+        if(USER == null) return;
         
         //Program Loop
         try{
@@ -46,7 +47,7 @@ public class HeadlessStartUp {
                         userSignUp.SignUpUser(blob.getDQuery(), blob.getScanner());
                         break;
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        System.out.println("Bad Username And/Or Password");
                     }
                 }
                 else if(input.equals("login"))
@@ -56,7 +57,8 @@ public class HeadlessStartUp {
                         user = Login.LogIntoDatabase(blob.getDQuery(), blob.getScanner());
                         break;
                     } catch ( SQLException e ){
-                        System.out.print("{ Couldn't Login, Try Again }\n ->");
+
+                        System.out.print(e.getMessage());
                     }
                 }
             }while(!ValidateInitialSignIn(input));
@@ -65,7 +67,7 @@ public class HeadlessStartUp {
 
     private static boolean ValidateInitialSignIn(String input)
     {
-        if(!input.equals("login") || !input.equals("sign up"))
+        if(!input.equals("login") && !input.equals("sign up"))
         {
             System.out.println("Not A Valid Choose, Rethink your life");
             return false;

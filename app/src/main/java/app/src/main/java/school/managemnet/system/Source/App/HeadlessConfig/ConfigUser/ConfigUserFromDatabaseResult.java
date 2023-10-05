@@ -26,6 +26,7 @@ public class ConfigUserFromDatabaseResult {
             Password = userinfo.getString("password");
         }
 
+        if(UserType == null) return;
         //TODO: Add functionality to get blob information (Assignments/email/etc) from the users
 
         user_type = UserType;
