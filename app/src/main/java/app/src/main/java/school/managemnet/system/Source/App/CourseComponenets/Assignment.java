@@ -45,6 +45,14 @@ public class Assignment {
         Correct_Answers = Answers;
     }
 
+    public Assignment(int id, int course_id, String name, String answers)
+    {
+        Assignment_Id = id;
+        Assignment_CourseId = course_id;
+        Assignment_Name = name;
+        Correct_Answers = answers;
+    }
+
     /*
      * Pre: Checks To See If The File Exists
      * Post: Takes A File (PNG. Or JPG) And Converts The Image Into A

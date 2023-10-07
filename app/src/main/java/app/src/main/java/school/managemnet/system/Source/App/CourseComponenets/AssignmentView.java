@@ -18,23 +18,33 @@ import javax.imageio.ImageIO;
 public class AssignmentView  
 {
     //Async Function
-    public AssignmentType launchAssignmentView(QueryAPI query, User user, Scanner sc) throws SQLException
+    public void launchAssignmentView(QueryAPI query, User user, Scanner sc) throws SQLException
     {  
-        AssignmentType a = null;
         switch(user.getUserType())
         {
             case "teacher":
                 final AssignmentType a_Teacher = query.OpenAssignment(user, sc);
+                
+                if(a_Teacher == null)
+                {
+                    System.out.println("No Assignments Currently");
+                    return;
+                }
+
                 SwingUtilities.invokeLater(()->
                 {
                     ShowAssignment(a_Teacher.GetImage());
                 });
-                a = a_Teacher;
                 break;
 
             case "student":
                 final AssignmentType a_Student = query.OpenAssignment(user, sc);
             
+                if(a_Student == null) {
+                    System.out.println("No Assignments Currently");
+                    return;
+                }
+
                 System.out.print("Do You Want To Take This Assignment (Yes/No): ");
                 //Add Validation Here
                 String input = sc.nextLine().toLowerCase();
@@ -52,11 +62,9 @@ public class AssignmentView
                         e.printStackTrace();
                     }
                 }   
-                a = a_Student;
                 break;
         }
         
-        return a;
     }
 
     private void ShowAssignment(byte[] image)

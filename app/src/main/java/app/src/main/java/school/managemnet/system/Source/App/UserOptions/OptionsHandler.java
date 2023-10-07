@@ -12,11 +12,13 @@ public class OptionsHandler{
         OptionsMap.put(1, new Student_ViewGpa());
         OptionsMap.put(2, new Student_TakeAssignment());
         OptionsMap.put(3, new Student_SeeGrades());
-        OptionsMap.put(4, new Contact());
-        OptionsMap.put(5, new SeeMessages());
-        OptionsMap.put(6, new Faculty_CreateAssignments());
-        OptionsMap.put(7, new Faculty_ShowCourses());
-        OptionsMap.put(8, new Faculty_OpenAssignments());
+        OptionsMap.put(4, new Student_ShowCourses());
+        OptionsMap.put(5, new Contact());
+        OptionsMap.put(6, new SeeMessages());
+        OptionsMap.put(7, new Faculty_CreateAssignments());
+        OptionsMap.put(8, new Faculty_ShowCourses());
+        OptionsMap.put(9, new Faculty_OpenAssignments());
+        OptionsMap.put(10, new Faculty_GradeAssignments());
     }
 
     public OptionsInterface OptionHandler(int OptionChoice)

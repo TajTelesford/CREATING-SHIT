@@ -10,7 +10,7 @@ public interface FacultyInterface {
     public void ViewStudentGpa();
     public void ViewStudentsGpa();
     public void CreateAssignment(QueryAPI query, Scanner scanner) throws SQLException;
-    public void GradeAssignment();
+    public void GradeAssignment(DataTypes blob);
     public void Contact(String subject, String message, DataTypes blob);
     public void ViewStudentAttendance();
     public void DeleteAssignment(QueryAPI query, int assignment_id) throws SQLException;

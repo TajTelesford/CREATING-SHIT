@@ -97,9 +97,9 @@ public class FacultyImpl extends User implements FacultyInterface{
     }
 
     @Override
-    public void GradeAssignment() {
-       
-        NotImplemented.Todo();
+    public void GradeAssignment(DataTypes blob) {
+       blob.getDQuery().Faculty_GradeAssignment(this, blob.getScanner());
+        
     }
 
     @Override
@@ -237,6 +237,5 @@ public class FacultyImpl extends User implements FacultyInterface{
         }
         return true;
     }
-
 
 }

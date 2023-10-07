@@ -148,10 +148,6 @@ public class User implements UserInterface
          
     }
 
-    @Override
-    public void GradeAssignment() {
-         
-    }
 
     @Override
     public void ViewStudentAttendance() {
@@ -176,6 +172,12 @@ public class User implements UserInterface
     @Override
     public void SeeMessages() {
         
+    }
+
+    @Override
+    public void GradeAssignment(DataTypes blob) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'GradeAssignment'");
     }
 
     

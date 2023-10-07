@@ -19,6 +19,7 @@ import app.src.main.java.school.managemnet.system.Source.App.DataConfigTypes.Mes
 import app.src.main.java.school.managemnet.system.Source.App.HeadlessConfig.ConfigUser.ConfigUserFromDatabaseResult;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.User;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.FacultyImpl;
+import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Faculty.Grader;
 import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Student.StudentImpl;
 
 public class QueryAPI {
@@ -310,7 +311,36 @@ public class QueryAPI {
 
     public void Faculty_GetGrades(){}
 
-    public void Faculty_SetGrades(){}
+    public void Faculty_GradeAssignment(FacultyImpl user, Scanner sc)
+    {
+        //get assignment
+        List<Assignment> assignments = Helper_GetAssignmentsFromTeacherId(user.getUserID());
+        int course_id = Helper_GetCourseIDFromTeacher(user);
+        System.out.println(course_id);
+        //get assignment answers
+        Assignment assignment = Helper_GetAssignmentsAnswers(assignments, sc);
+        //get list of students
+        List<StudentImpl> student_list = Helper_GetListOfStudents(user);
+        /*
+            loop thru students
+                get their submission
+                grade their submission
+                put their grade in the students_grades table
+        */
+        for(StudentImpl student : student_list)
+        {
+            String submission = Helper_FetchSubmissionFromStudent(
+                student.getUserID(), assignment.GetAssignmentID()
+            );
+
+            if(submission == null) submission = "";
+            int grade = Grader.Grade(submission, assignment.GetAssignmentCorrectAnswers());
+            System.out.println("GRADE: " + grade);
+            Helper_UpdateStudentGrade(student.getUserID(), assignment.GetAssignmentID(), grade, course_id);
+        }
+    
+
+    }
 
     public void Faculty_ChangeGrades(){}
 
@@ -338,8 +368,6 @@ public class QueryAPI {
 
     public void Faculty_DeleteAssignmet(Assignment assignment, FacultyImpl user) throws SQLException {}
 
-    public void Faculty_GradeAssignment(Assignment assignment, FacultyImpl user) throws SQLException {}
-
     //Student Functionality
     public void Student_SubmitAssignment(StudentImpl student, int course_id, String answers, AssignmentType assignment)
     {
@@ -364,6 +392,11 @@ public class QueryAPI {
         {
             e.printStackTrace();
         }
+    }
+
+    public void Student_SeeGrades(StudentImpl student)
+    {
+
     }
 
     //Course Functionality
@@ -413,17 +446,21 @@ public class QueryAPI {
     }
 
     //Helper Functions
-    public int Helper_GetCourseIDFromTeacher(FacultyImpl teacher) throws SQLException
+    public int Helper_GetCourseIDFromTeacher(FacultyImpl teacher)
     {
         int ID = -1;
         String query = "SELECT course_id FROM courses WHERE teacher_id = ?";
-        PreparedStatement pStatement = connection.prepareStatement(query);
-        pStatement.setInt(1, teacher.getUserID());
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+            pStatement.setInt(1, teacher.getUserID());
 
-        ResultSet resultSet = pStatement.executeQuery();
-        while( resultSet.next() )
+            ResultSet resultSet = pStatement.executeQuery();
+            if( resultSet.next() )
+            {
+                ID = resultSet.getInt("course_id");
+            }
+        } catch(SQLException e)
         {
-            ID = resultSet.getInt("course_id");
+            e.printStackTrace();
         }
         return ID;
     }
@@ -485,6 +522,12 @@ public class QueryAPI {
         int choice = sc.nextInt() - 1;
 
         assignments = Helper_GetStudentsAssignments(courses.get(choice).GetCourseID());
+        if(assignments == null) 
+        {
+            sc.nextLine();
+            return null;
+        }
+            
         Helper_PrintAssignments(assignments);
 
         //Add Validation Here
@@ -517,10 +560,11 @@ public class QueryAPI {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, course_id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            
-            while (resultSet.next()) 
-            {
-                assignments.add(
+
+            //this would mean there is not assignments in the course
+            if(resultSet.next()) {
+                do{
+                    assignments.add(
                     new Assignment(
                         resultSet.getBytes("assignment_image"), 
                         resultSet.getInt("assignment_id"),
@@ -531,12 +575,14 @@ public class QueryAPI {
                         resultSet.getString("correct_answers")
                     )
                 );
-            }
-            } 
-            catch (SQLException e) 
-            {
-                e.printStackTrace();
-            }
+            } while (resultSet.next()) ;
+        } else return null; 
+
+        } catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }
+        
         return assignments;
     }
 
@@ -604,7 +650,7 @@ public class QueryAPI {
                             assignment.GetAssignmentID()
                             );
 
-        return a; //returns image bytes
+        return a;
     }
 
     private void Helper_PrintCourses(List<course> courses) 
@@ -797,6 +843,113 @@ public class QueryAPI {
         return course_id;
     }
 
+    public List<Assignment> Helper_GetAssignmentsFromTeacherId(int teacher_id)
+    {
+        List<Assignment> a = new ArrayList<>();
+        String query = "SELECT * FROM assignments " +
+                        "WHERE course_id IN " + 
+                        "(SELECT course_id FROM courses WHERE teacher_id = ?)";
+        try(PreparedStatement pStatement = connection.prepareStatement(query))
+        {
+            pStatement.setInt(1, teacher_id);
+            ResultSet set = pStatement.executeQuery();
 
+            while ( set.next() )
+            {
+                Assignment assign = new Assignment(set.getInt("assignment_id"), 
+                                                set.getInt("course_id"), 
+                                                set.getString("assignment_name"),
+                                                set.getString("correct_answers"));
+                a.add(assign);
+            }
+
+        } catch(SQLException e)
+        {
+            System.out.println("Couldn't find teacher's Assignments");
+        }
+        return a;
+    }
+
+    public Assignment Helper_GetAssignmentsAnswers(List<Assignment> a, Scanner sc)
+    {
+        for (int i = 0; i < a.size(); i++)
+        {
+            System.out.println(
+                (i+1) + ": " + a.get(i).GetAssignmentName()
+            );
+        }
+        int choice = sc.nextInt() - 1;
+        return a.get(choice);
+    }
+
+    private String Helper_FetchSubmissionFromStudent(int userID, int getAssignmentID) {
+        String query = "select * from submissions " +
+                        "where student_id = ? and assignment_id = ?";
+        
+        try(PreparedStatement pStatement = connection.prepareStatement(query))
+        {
+            pStatement.setInt(1, userID);
+            pStatement.setInt(2, getAssignmentID);
+
+            ResultSet set = pStatement.executeQuery();
+            if( set.next() )
+                return set.getString("student_answers");
+
+        } catch(SQLException e)
+        {
+
+        }
+        return null;
+    }
+
+    public void Helper_UpdateStudentGrade(int student_id, int a_id, int grade, int course_id)
+    {
+        String query = "INSERT INTO student_grades (student_id, course_id, assignment_id, grade) " +
+                        "VALUES (?, ?, ?, ?)";
+        
+        try(PreparedStatement pStatement = connection.prepareStatement(query))
+        {
+            pStatement.setInt(1, student_id);
+            pStatement.setInt(2, course_id);
+            pStatement.setInt(3, a_id);
+            pStatement.setInt(4, grade);
+
+            int rows = pStatement.executeUpdate();
+            System.out.println(rows + " Changed");
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void Helper_ShowCourses(int student_id)
+    {
+        String query = "select courses.course_name " +
+                        "from courses " +
+                        "join student_courses on courses.course_id = student_courses.course_id " +
+                        "where student_courses.student_id = ?";
+        
+        try(PreparedStatement pStatement = connection.prepareStatement(query))
+        {
+            pStatement.setInt(1, student_id);
+
+            ResultSet set = pStatement.executeQuery();
+
+            if( set.next() )
+            {
+                System.out.println("Courses:");
+                do{
+                    System.out.println(
+                        "-- " + set.getString("course_name")
+                    );
+                }while(set.next());
+            }
+            else System.out.println("Not Enrolled Into Any Courses Yet");
+
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 }
