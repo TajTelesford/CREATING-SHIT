@@ -8,7 +8,7 @@ public class Student_SeeGrades extends OptionsInterface{
 
     @Override
     public void ExecuteOption(User user, DataTypes blob) {
-        NotImplemented.Todo();
+        blob.getDQuery().Student_SeeGrades(user.ReturnAStudent(user));
     }
     
 }

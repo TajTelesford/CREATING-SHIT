@@ -6,7 +6,9 @@ import app.src.main.java.school.managemnet.system.Source.App.UserFunctionalty.Us
 public class OptionFactory {
 
     static OptionsInterface Option;
-    public static int FactoryMaxOptions = 11;
+    public static int FactoryMaxOptions = 10;
+    public static int MaxStudentOptions = 5;
+    public static int MinFacultyOptions = 4;
     private static OptionsHandler handler = new OptionsHandler(); 
 
     public static void FactoryRun(int option, User user)
@@ -18,12 +20,11 @@ public class OptionFactory {
     {
         System.out.print(
                     "========================================\n" + 
-                    "1: View Gpa\n" +
-                    "2: Take Assignments\n" +
-                    "3: See Grades\n" +
-                    "4: Show Courses\n" +
-                    "5: Contact Teachers\n" +
-                    "6: See Messages\n" +
+                    "1: Take Assignments\n" +
+                    "2: See Grades\n" +
+                    "3: Show Courses\n" +
+                    "4: Contact Teachers\n" +
+                    "5: See Messages\n" +
                     FactoryMaxOptions +": Quit\n"+
                     "======================================== Enter Choice: " 
                     );
@@ -33,12 +34,12 @@ public class OptionFactory {
     {
         System.out.print(
                     "========================================\n" + 
-                    "5: Contact Student\n" +
-                    "6: See Messages\n" +
-                    "7: Create Assignments\n" +
-                    "8: See Courses\n" +
-                    "9: View Assignments\n" +
-                    "10: Grade Assignments\n" +
+                    "4: Contact Student\n" +
+                    "5: See Messages\n" +
+                    "6: Create Assignments\n" +
+                    "7: See Courses\n" +
+                    "8: View Assignments\n" +
+                    "9: Grade Assignments\n" +
                     FactoryMaxOptions +": Quit\n"+
                     "======================================== Enter Choice: " 
                     );

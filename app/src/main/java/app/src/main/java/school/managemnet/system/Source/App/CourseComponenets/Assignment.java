@@ -143,13 +143,4 @@ public class Assignment {
 
     public byte[] GetAssignmentImage() { return Assignment_Image; }
 
-
-    /*
-        Variables:
-        - Student Name
-        - Student ID (Primary Key - Database)
-        - Date Of Submittion
-        - Assignment informarion (Questions - Answers)
-        
-     */
 }

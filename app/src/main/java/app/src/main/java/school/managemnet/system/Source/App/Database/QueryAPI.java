@@ -331,12 +331,23 @@ public class QueryAPI {
         {
             String submission = Helper_FetchSubmissionFromStudent(
                 student.getUserID(), assignment.GetAssignmentID()
-            );
+            ); 
 
             if(submission == null) submission = "";
             int grade = Grader.Grade(submission, assignment.GetAssignmentCorrectAnswers());
             System.out.println("GRADE: " + grade);
             Helper_UpdateStudentGrade(student.getUserID(), assignment.GetAssignmentID(), grade, course_id);
+            try{
+                Helper_UpdateCourseGrade(
+                    student.getUserID(), course_id, 
+                        (int)Helper_CalulateCourseGrade(
+                            student.getUserID(), course_id
+                        )
+                );
+            } catch(ArithmeticException e)
+            {
+                System.out.println("Divided by zero");
+            }
         }
     
 
@@ -396,6 +407,39 @@ public class QueryAPI {
 
     public void Student_SeeGrades(StudentImpl student)
     {
+        try{
+            List<course> cList = Helper_GetStudentCourses(student.getUserID());
+            List<Integer> grades_list = Helper_GetStudentGrades(student.getUserID());
+
+            if(grades_list.size() == 0)
+            {
+                System.out.println("{No Grades to show}");
+                return;
+            }
+
+            System.out.println("\n==================================");
+
+            for(int i = 0; i < cList.size(); i++)
+            {
+
+                System.out.println(
+                    "Course: " + cList.get(i).GetCourseName()
+                );
+                if(i == grades_list.size())
+                    System.out.println(
+                        "---Grade: " + "{NO GRADE}"
+                    );
+                else
+                    System.out.println(
+                        "---Grade: " + grades_list.get(i)
+                    );
+            }
+            System.out.println("==================================\n");
+            grades_list = Helper_GetStudentGrades(student.getUserID());
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -882,7 +926,8 @@ public class QueryAPI {
         return a.get(choice);
     }
 
-    private String Helper_FetchSubmissionFromStudent(int userID, int getAssignmentID) {
+    private String Helper_FetchSubmissionFromStudent(int userID, int getAssignmentID) 
+    {
         String query = "select * from submissions " +
                         "where student_id = ? and assignment_id = ?";
         
@@ -904,22 +949,38 @@ public class QueryAPI {
 
     public void Helper_UpdateStudentGrade(int student_id, int a_id, int grade, int course_id)
     {
-        String query = "INSERT INTO student_grades (student_id, course_id, assignment_id, grade) " +
-                        "VALUES (?, ?, ?, ?)";
-        
-        try(PreparedStatement pStatement = connection.prepareStatement(query))
-        {
-            pStatement.setInt(1, student_id);
-            pStatement.setInt(2, course_id);
-            pStatement.setInt(3, a_id);
-            pStatement.setInt(4, grade);
+        String selectQuery = "SELECT * FROM student_grades WHERE student_id = ? AND course_id = ? AND assignment_id = ?";
+        boolean recordExists = false;
 
-            int rows = pStatement.executeUpdate();
-            System.out.println(rows + " Changed");
-        } catch(SQLException e)
-        {
+        try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+            selectStatement.setInt(1, student_id);
+            selectStatement.setInt(2, course_id);
+            selectStatement.setInt(3, a_id);
+
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                recordExists = resultSet.next();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // If the record doesn't exist, insert it
+        if (!recordExists) {
+            String insertQuery = "INSERT INTO student_grades (student_id, course_id, assignment_id, grade) " +
+                    "VALUES (?, ?, ?, ?)";
+
+            try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                insertStatement.setInt(1, student_id);
+                insertStatement.setInt(2, course_id);
+                insertStatement.setInt(3, a_id);
+                insertStatement.setInt(4, grade);
+
+                int rows = insertStatement.executeUpdate();
+                System.out.println(rows + " Changed");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } 
     }
 
     public void Helper_ShowCourses(int student_id)
@@ -951,5 +1012,85 @@ public class QueryAPI {
             e.printStackTrace();
         }
     }
+
+    public int Helper_CalulateCourseGrade(int studentId, int courseId) throws ArithmeticException
+    {
+        List<Integer> grades = new ArrayList<>();
+
+        String query = "SELECT grade FROM student_grades WHERE student_id = ? AND course_id = ?";
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, studentId);
+            preparedStatement.setInt(2, courseId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) {
+                int grade = resultSet.getInt("grade");
+                System.out.println("size: " + grade);
+                grades.add(grade);
+            }
+            
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        int g = 0;
+        for(int x : grades)
+        {
+            g += x;
+        }
+        
+        return Math.round(g/grades.size());
+    }
+
+    public void Helper_UpdateCourseGrade(int studentId, int courseId, int courseGrade)
+    {
+        String selectQuery = "SELECT * FROM course_grades WHERE student_id = ? AND course_id = ?";
+        try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+            selectStatement.setInt(1, studentId);
+            selectStatement.setInt(2, courseId);
+            if (selectStatement.executeQuery().next()) {
+                // If a record exists, update the existing grade
+                String updateQuery = "UPDATE course_grades SET grade = ? WHERE student_id = ? AND course_id = ?";
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+                    updateStatement.setInt(1, courseGrade);
+                    updateStatement.setInt(2, studentId);
+                    updateStatement.setInt(3, courseId);
+                    updateStatement.executeUpdate();
+                }
+            } else {
+                // If no record exists, insert a new record with the grade
+                String insertQuery = "INSERT INTO course_grades (student_id, course_id, grade) VALUES (?, ?, ?)";
+                try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                    insertStatement.setInt(1, studentId);
+                    insertStatement.setInt(2, courseId);
+                    insertStatement.setInt(3, courseGrade);
+                    insertStatement.executeUpdate();
+                }
+            }
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public List<Integer> Helper_GetStudentGrades(int student_id) {
+        List<Integer> grades = new ArrayList<>();
+        String query = "SELECT grade FROM course_grades WHERE student_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, student_id); // Set the student ID parameter
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int grade = resultSet.getInt("grade");
+                grades.add(grade);
+            }
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return grades;
+    }
+
 
 }

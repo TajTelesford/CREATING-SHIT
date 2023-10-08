@@ -95,13 +95,9 @@ public class HeadlessStartUp {
 
         do{
             option = usrInput.nextLine();
-        }while(!ValidateOption(option));
+        }while(!ValidateOption(option, usr.user_type));
 
-        if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
-        {
-            QuitHeadlessLoop();
-            return;
-        } 
+        if(HeadlessProgramLoop == false) return;
 
         OptionFactory.FactoryRun(Integer.parseInt(option), 
                                 usr.user_type.equals("student") 
@@ -111,10 +107,34 @@ public class HeadlessStartUp {
     }
 
     //Validates choice depending on user type
-    private static boolean ValidateOption(String option)
+    private static boolean ValidateOption(String option, String user_type)
     {
         try{
             if(Integer.parseInt(option) > OptionFactory.FactoryMaxOptions || Integer.parseInt(option) < 1)
+            {
+                System.out.println("Not A Valid Option, Please Choose Again");
+                return false;
+            }
+
+            else if(Integer.parseInt(option) == OptionFactory.FactoryMaxOptions)
+            {
+                QuitHeadlessLoop();
+                return true;
+            } 
+
+            else if(user_type.equals("student") && Integer.parseInt(option) > OptionFactory.MaxStudentOptions)
+            {
+                System.out.println("Not Allowed To Use This Functionality");
+                return false;
+            }
+
+            else if(user_type.equals("teacher") && Integer.parseInt(option) < OptionFactory.MinFacultyOptions)
+            {
+                System.out.println("Not Allowed To Use This Functionality");
+                return false;
+            }
+
+            else if(Integer.parseInt(option) > OptionFactory.FactoryMaxOptions || Integer.parseInt(option) < 1)
             {
                 System.out.println("Not A Valid Option, Please Choose Again");
                 return false;
