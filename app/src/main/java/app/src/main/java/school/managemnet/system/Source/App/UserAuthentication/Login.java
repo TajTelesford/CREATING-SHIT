@@ -1,6 +1,5 @@
 package app.src.main.java.school.managemnet.system.Source.App.UserAuthentication;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -30,6 +29,7 @@ public class Login {
         }while(count < MAX_Login_Times && GetUserContext(sc));
         return null;
     }
+
 
     // private String HashPassword(String pass)
     // {

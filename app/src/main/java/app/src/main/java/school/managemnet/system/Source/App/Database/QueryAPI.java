@@ -60,14 +60,12 @@ public class QueryAPI {
     }
 
     //LOGIN FUNCTIONALITY
-    public 
-    ConfigUserFromDatabaseResult Login_LogIntoDatabase(String HashedPassword, int ID) throws SQLException
+    public ConfigUserFromDatabaseResult Login_LogIntoDatabase(String HashedPassword, int ID) throws SQLException
     {
         ResultSet UserData = null;
         String login_query = "SELECT * FROM users WHERE user_id = ? AND password = ?";
     
         PreparedStatement pStatement = connection.prepareStatement(login_query);
-        
         pStatement.setInt(1, ID);
         pStatement.setString(2, HashedPassword);
         UserData = pStatement.executeQuery();
@@ -1091,6 +1089,5 @@ public class QueryAPI {
         }
         return grades;
     }
-
 
 }

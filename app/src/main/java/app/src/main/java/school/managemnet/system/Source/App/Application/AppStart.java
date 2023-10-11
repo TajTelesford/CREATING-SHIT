@@ -2,6 +2,8 @@ package app.src.main.java.school.managemnet.system.Source.App.Application;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
 import app.src.main.java.school.managemnet.system.Source.App.Database.DATABASECONNECTION;
 import app.src.main.java.school.managemnet.system.Source.App.Database.QueryAPI;
 import app.src.main.java.school.managemnet.system.Source.App.GraphicalUserInterfaceConfig.GraphicalUserInterfaceStartup;
@@ -47,17 +49,25 @@ public class AppStart
             if(Config.equals("--headless")) 
             {
                 HeadlessStartUp.Run(ApplicationQuery, sc);
+                ApplicationQuery.QueryShutdown();
             }
-            else if(Config.equals("--gui")) 
-                GraphicalUserInterfaceStartup.Run();
+            else if(Config.equals("--admin")) 
+            AdminView(sc);
+                
             else{
-                AdminView(sc);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run()
+                    {
+                        GraphicalUserInterfaceStartup.Run(ApplicationQuery);
+                        
+                    }
+                });
             }
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
-            ApplicationQuery.QueryShutdown();
+            
     }
 
     public void AdminView(Scanner sc) throws SQLException
